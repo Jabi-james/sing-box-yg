@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# 定义颜色
+# Defining Colors
 re="\033[0m"
 red="\033[1;91m"
 green="\e[1;32m"
@@ -18,7 +18,7 @@ HOSTNAME=$(hostname)
 
 read_ip() {
 cat ip.txt
-reading "请输入上面三个IP中的任意一个 (建议默认回车自动选择可用IP): " IP
+reading "Please enter any one of the three IPs above (it is recommended to press Enter to automatically select an available IP by defaul): " IP
 if [[ -z "$IP" ]]; then
 IP=$(grep -m 1 "可用" ip.txt | awk -F ':' '{print $1}')
 if [ -z "$IP" ]; then
@@ -28,71 +28,71 @@ IP=$(head -n 1 ip.txt | awk -F ':' '{print $1}')
 fi
 fi
 fi
-green "你选择的IP为: $IP"
+green "The IP you selected is: $IP"
 }
 
 read_uuid() {
-        reading "请输入统一的uuid密码 (建议回车默认随机): " UUID
-        if [[ -z "$UUID" ]]; then
-	   UUID=$(uuidgen -r)
-        fi
-	green "你的uuid为: $UUID"
+reading "Please enter a unified uuid password (it is recommended to press Enter to default to random): " UUID
+if [[ -z "$UUID" ]]; then
+UUID=$(uuidgen -r)
+fi
+green "Your uuid is: $UUID"
 }
 
 read_reym() {
-        yellow "方式一：回车使用CF域名，支持proxyip+非标端口反代ip功能 (推荐)"
-	yellow "方式二：输入 s 表示使用Serv00自带域名，不支持proxyip功能 (推荐)"
-        yellow "方式三：支持其他域名，注意要符合reality域名规则"
-        reading "请输入reality域名 【请选择 回车 或者 s 或者 输入域名】: " reym
-        if [[ -z "$reym" ]]; then
-           reym=www.speedtest.net
-	elif [[ "$reym" == "s" || "$reym" == "S" ]]; then
-           reym=$USERNAME.serv00.net
-        fi
-	green "你的reality域名为: $reym"
+yellow "Method 1: Press Enter to use the CF domain name, support proxyip+non-standard port reverse IP function (recommended)"
+yellow "Method 2: Enter s to use the domain name provided by Serv00, and do not support the proxyip function (recommended)"
+yellow "Method 3: Support other domain names, pay attention to comply with the reality domain name rules"
+reading "Please enter the reality domain name [Please select Enter or s or enter the domain name]: " reym
+if [[ -z "$reym" ]]; then
+reym=www.speedtest.net
+elif [[ "$reym" == "s" || "$reym" == "S" ]]; then
+reym=$USERNAME.serv00.net
+fi
+green "Your reality domain name is: $reym"
 }
 
 read_vless_port() {
-    while true; do
-        reading "请输入vless-reality端口 (面板开放的tcp端口): " vless_port
-        if [[ "$vless_port" =~ ^[0-9]+$ ]] && [ "$vless_port" -ge 1 ] && [ "$vless_port" -le 65535 ]; then
-            green "你的vless-reality端口为: $vless_port"
-            break
-        else
-            yellow "输入错误，请重新输入面板开放的TCP端口"
-        fi
-    done
+while true; do
+reading "Please enter the vless-reality port (the TCP port opened by the panel): " vless_port
+if [[ "$vless_port" =~ ^[0-9]+$ ]] && [ "$vless_port" -ge 1 ] && [ "$vless_port" -le 65535 ]; then
+green "Your vless-reality port is: $vless_port"
+break
+else
+yellow "Input error, please re-enter the TCP port opened by the panel"
+fi
+done
 }
 
 read_hy2_port() {
-    while true; do
-        reading "请输入hysteria2端口 (面板开放的UDP端口): " hy2_port
-        if [[ "$hy2_port" =~ ^[0-9]+$ ]] && [ "$hy2_port" -ge 1 ] && [ "$hy2_port" -le 65535 ]; then
-            green "你的hysteria2端口为: $hy2_port"
-            break
-        else
-            yellow "输入错误，请重新输入面板开放的UDP端口"
+while true; do
+reading "Please enter the hysteria2 port (the UDP port opened by the panel): " hy2_port
+if [[ "$hy2_port" =~ ^[0-9]+$ ]] && [ "$hy2_port" -ge 1 ] && [ "$hy2_port" -le 65535 ]; then
+green "Your hysteria2 port is: $hy2_port"
+break
+else
+yellow "Input error, please re-enter the UDP port opened by the panel"
         fi
     done
 }
 
 read_vmess_port() {
     while true; do
-        reading "请输入vmess-ws端口 (面板开放的tcp端口): " vmess_port
-        if [[ "$vmess_port" =~ ^[0-9]+$ ]] && [ "$vmess_port" -ge 1 ] && [ "$vmess_port" -le 65535 ]; then
-            green "你的vmess端口为: $vmess_port"
-            break
-        else
-            yellow "输入错误，请重新输入面板开放的tcp端口"
+        reading "Please enter the vmess-ws port (the TCP port opened by the panel): " vmess_port
+if [[ "$vmess_port" =~ ^[0-9]+$ ]] && [ "$vmess_port" -ge 1 ] && [ "$vmess_port" -le 65535 ]; then
+green "Your vmess port is: $vmess_port"
+break
+else
+yellow "Input error, please re-enter the TCP port opened by the panel"
         fi
     done
 }
 
 install_singbox() {
 if [[ -e $WORKDIR/list.txt ]]; then
-yellow "已安装sing-box，请先选择2卸载，再执行安装" && exit
+yellow "sing-box has been installed, please select 2 to uninstall first, then install" && exit
 fi
-yellow "请确保在Serv00网页设置中已开放3个端口：2个tcp端口、1个udp端口"
+yellow "Please make sure that 3 ports are open in the Serv00 web page settings: 2 TCP ports, 1 UDP port"
 sleep 2
         cd $WORKDIR
 	echo
@@ -121,7 +121,7 @@ sleep 2
 }
 
 uninstall_singbox() {
-  reading "\n确定要卸载吗？【y/n】: " choice
+  reading "\Are you sure you want to uninstall？【y/n】: " choice
     case "$choice" in
        [Yy])
           ps aux | grep $(whoami) | grep -v "sshd\|bash\|grep" | awk '{print $2}' | xargs -r kill -9 2>/dev/null
@@ -130,15 +130,15 @@ uninstall_singbox() {
           crontab rmcron >/dev/null 2>&1
           rm rmcron
           clear
-          green "已完全卸载"
+          green "Completely uninstalled"
           ;;
         [Nn]) exit 0 ;;
-    	*) red "无效的选择，请输入y或n" && menu ;;
+    	*) red "Invalid selection, please enter y or n" && menu ;;
     esac
 }
 
 kill_all_tasks() {
-reading "\n清理所有进程并清空所有安装内容，将退出ssh连接，确定继续清理吗？【y/n】: " choice
+reading "\Clean up all processes and clear all installed content. You will exit the ssh connection. Are you sure you want to continue cleaning？【y/n】: " choice
   case "$choice" in
     [Yy]) 
     ps aux | grep $(whoami) | grep -v "sshd\|bash\|grep" | awk '{print $2}' | xargs -r kill -9 2>/dev/null
@@ -159,21 +159,21 @@ reading "\n清理所有进程并清空所有安装内容，将退出ssh连接，
 # Generating argo Config
 argo_configure() {
   while true; do
-    yellow "方式一：Argo临时隧道 (无需域名，推荐)"
-    yellow "方式二：Argo固定隧道 (需要域名，需要CF设置提取Token)"
-    echo -e "${red}注意：${purple}Argo固定隧道使用Token时，需要在cloudflare后台设置隧道端口，该端口必须与vmess-ws的tcp端口一致)${re}"
-    reading "输入 g 表示使用Argo固定隧道，回车跳过表示使用Argo临时隧道 【请选择 g 或者 回车】: " argo_choice
-    if [[ "$argo_choice" != "g" && "$argo_choice" != "G" && -n "$argo_choice" ]]; then
-        red "无效的选择，请输入 g 或回车"
-        continue
-    fi
-    if [[ "$argo_choice" == "g" || "$argo_choice" == "G" ]]; then
-        reading "请输入argo固定隧道域名: " ARGO_DOMAIN
-        green "你的argo固定隧道域名为: $ARGO_DOMAIN"
-        reading "请输入argo固定隧道密钥（Json或Token。当你粘贴Token时，必须以ey开头）: " ARGO_AUTH
-        green "你的argo固定隧道密钥为: $ARGO_AUTH"
-    else
-        green "使用Argo临时隧道"
+    yellow "方式一：Argo temporary tunnel (no domain name required, recommended)"
+yellow "Method 2: Argo fixed tunnel (domain name required, CF needs to be set to extract token)"
+echo -e "${red} Note: ${purple} When Argo fixed tunnel uses token, you need to set the tunnel port in the cloudflare backend, which must be consistent with the tcp port of vmess-ws)${re}"
+reading "Enter g to use Argo fixed tunnel, press Enter to skip to use Argo temporary tunnel [Please select g or press Enter]: " argo_choice
+if [[ "$argo_choice" != "g" && "$argo_choice" != "G" && -n "$argo_choice" ]]; then
+red "Invalid choice, please enter g or press Enter"
+continue
+fi
+if [[ "$argo_choice" == "g" || "$argo_choice" == "G" ]]; then
+reading "Please enter the domain name of argo fixed tunnel: " ARGO_DOMAIN
+green "Your argo fixed tunnel domain name is: $ARGO_DOMAIN"
+reading "Please enter the argo fixed tunnel key (Json or Token. When you paste the token, it must start with ey): " ARGO_AUTH
+green "Your argo fixed tunnel key is: $ARGO_AUTH"
+else
+green "Use Argo temporary tunnel"
     fi
     break
 done
@@ -389,19 +389,19 @@ if [ -e "$(basename ${FILE_MAP[web]})" ]; then
     nohup ./"$sbb" run -c config.json >/dev/null 2>&1 &
     sleep 5
 if pgrep -x "$sbb" > /dev/null; then
-    green "$sbb 主进程已启动"
+    green "$sbb The main process has been started"
 else
 for ((i=1; i<=5; i++)); do
-    red "$sbb 主进程未启动, 重启中... (尝试次数: $i)"
-    pkill -x "$sbb"
-    nohup ./"$sbb" run -c config.json >/dev/null 2>&1 &
-    sleep 5
-    if pgrep -x "$sbb" > /dev/null; then
-        purple "$sbb 主进程已成功重启"
-        break
-    fi
-    if [[ $i -eq 5 ]]; then
-        red "$sbb 主进程重启失败"
+red "$sbb main process has not been started, restarting... (number of attempts: $i)"
+pkill -x "$sbb"
+nohup ./"$sbb" run -c config.json >/dev/null 2>&1 &
+sleep 5
+if pgrep -x "$sbb" > /dev/null; then
+purple "$sbb main process has been successfully restarted"
+break
+fi
+if [[ $i -eq 5 ]]; then
+red "$sbb main process restart failed"
     fi
 done
 fi
@@ -421,24 +421,24 @@ if [ -e "$(basename ${FILE_MAP[bot]})" ]; then
     nohup ./"$agg" $args >/dev/null 2>&1 &
     sleep 10
 if pgrep -x "$agg" > /dev/null; then
-    green "$agg Arog进程已启动"
+    green "$agg Arog process has been started"
 else
-    red "$agg Argo进程未启动, 重启中..."
+red "$agg Argo process has not been started, restarting..."
     pkill -x "$agg"
     nohup ./"$agg" "${args}" >/dev/null 2>&1 &
     sleep 5
-    purple "$agg Argo进程已重启"
+    purple "$agg Argo process has been restarted"
 fi
 fi
 sleep 2
 if ! pgrep -x "$(cat sb.txt)" > /dev/null; then
-red "主进程未启动，根据以下情况一一排查"
-yellow "1、网页端权限是否开启"
-yellow "2、端口是否设置错误(2个TCP、1个UDP)"
-yellow "3、尝试更换网页端3个端口并重装"
-yellow "4、选择5重置"
-yellow "5、当前Serv00服务器炸了？等会再试"
-red "6、以上都试了，哥直接躺平，交给进程保活，过会再来看"
+red "The main process has not started, check the following situations one by one"
+yellow "1. Is the web page permission enabled?"
+yellow "2. Is the port setting wrong (2 TCP, 1 UDP)?"
+yellow "3. Try to change 3 web page ports and reinstall"
+yellow "4. Select 5 to reset"
+yellow "5. Is the current Serv00 server crashed? Try again later"
+red "6. After trying all the above, I will just lie down and let the process keep alive. I will check again later"
 sleep 6
 fi
 }
@@ -460,7 +460,7 @@ get_argodomain() {
       sleep 2
     done  
     if [ -z ${argodomain} ]; then
-    argodomain="Argo临时域名暂时获取失败，Argo节点暂不可用"
+    argodomain="Failed to obtain the Argo temporary domain name. The Argo node is temporarily unavailable"
     fi
     echo "$argodomain"
   fi
@@ -490,57 +490,57 @@ sleep 2
 cat > list.txt <<EOF
 =================================================================================================
 
-一、Vless-reality分享链接如下：
+1. The Vless-reality sharing link is as follows:
 $vl_link
 
-注意：如果之前输入的reality域名为CF域名，将激活以下功能：
-可应用在 https://github.com/yonggekkk/Cloudflare_vless_trojan 项目中创建CF vless/trojan 节点
-1、Proxyip(带端口)信息如下：
-方式一全局应用：设置变量名：proxyip    设置变量值：$IP:$vless_port  
-方式二单节点应用：path路径改为：/pyip=$IP:$vless_port
-CF节点的TLS可开可关
-CF节点落地到CF网站的地区为：$IP所在地区
+Note: If the reality domain name entered previously is a CF domain name, the following functions will be activated:
+It can be applied to create a CF vless/trojan node in the https://github.com/yonggekkk/Cloudflare_vless_trojan project
+1. The Proxyip (with port) information is as follows:
+Method 1 Global application: Set variable name: proxyip Set variable value: $IP:$vless_port
+Method 2: Single-node application: path is changed to: /pyip=$IP:$vless_port
+TLS of CF node can be turned on or off
+The area where CF node lands on CF website is: $IP area
 
-2、非标端口反代IP信息如下：
-客户端优选IP地址为：$IP，端口：$vless_port
-CF节点的TLS必须开启
-CF节点落地到非CF网站的地区为：$IP所在地区
+2. Non-standard port reverse IP information is as follows:
+Client preferred IP address is: $IP, port: $vless_port
+TLS of CF node must be turned on
+CF node lands on non-CF website is: $IP area
 
-注：如果serv00的IP被墙，proxyip依旧有效，但用于客户端地址与端口的非标端口反代IP将不可用
-注：可能有大佬会扫Serv00的反代IP作为其共享IP库或者出售，请慎重将reality域名设置为CF域名
+Note: If serv00 IP is blocked, proxyip is still valid, but non-standard port reverse IP for client address and port will not be available
+Note: Some big guys may scan Serv00's reverse IP as their shared IP library or sell it, please be careful to set the reality domain name to CF domain name
 -------------------------------------------------------------------------------------------------
 
 
-二、Vmess-ws分享链接三形态如下：
+2. The three forms of Vmess-ws sharing link are as follows:
 
-1、Vmess-ws主节点分享链接如下：
-(该节点默认不支持CDN，如果设置为CDN回源(需域名)：客户端地址可自行修改优选IP/域名，7个80系端口随便换，被墙依旧能用！)
+1. The Vmess-ws main node sharing link is as follows:
+(This node does not support CDN by default. If it is set to CDN back to the source (domain name required): the client address can be modified by the preferred IP/domain name, and the 7 80 series ports can be changed at will. It can still be used even if blocked!)
 $vmws_link
 
-Argo域名：${argodomain}
-如果上面Argo临时域名未生成，以下 2 与 3 的Argo节点将不可用 (打开Argo固定/临时域名网页，显示HTTP ERROR 404说明正常可用)
+Argo domain name: ${argodomain}
+If the above Argo temporary domain name is not generated, the following 2 and 3 Argo nodes will be unavailable (open Argo fixed/temporary domain name webpage, HTTP ERROR 404 is displayed, indicating normal availability)
 
-2、Vmess-ws-tls_Argo分享链接如下： 
-(该节点为CDN优选IP节点，客户端地址可自行修改优选IP/域名，6个443系端口随便换，被墙依旧能用！)
+2. Vmess-ws-tls_Argo sharing link is as follows:
+(This node is a CDN preferred IP node, the client address can modify the preferred IP/domain name, the 6 443 series ports can be changed at will, and it can still be used even if it is blocked!)
 $vmatls_link
 
-3、Vmess-ws_Argo分享链接如下：
-(该节点为CDN优选IP节点，客户端地址可自行修改优选IP/域名，7个80系端口随便换，被墙依旧能用！)
+3. Vmess-ws_Argo sharing link is as follows:
+(This node is a CDN preferred IP node, the client address can modify the preferred IP/domain name, the 7 80 series ports can be changed at will, and it can still be used even if it is blocked!)
 $vma_link
 -------------------------------------------------------------------------------------------------
 
 
-三、HY2分享链接如下：
+3. HY2 sharing link is as follows:
 $hy2_link
 -------------------------------------------------------------------------------------------------
 
 
-四、以上五个节点的聚合通用分享链接如下：
+4. The aggregated general sharing link of the above five nodes is as follows:
 $baseurl
 -------------------------------------------------------------------------------------------------
 
 
-五、查看sing-box与clash-meta的订阅配置文件，请进入主菜单选择4
+5. To view the subscription profiles of sing-box and clash-meta, please enter the main menu and select 4
 -------------------------------------------------------------------------------------------------
 
 =================================================================================================
@@ -976,7 +976,7 @@ proxies:
       Host: $argodomain 
 
 proxy-groups:
-- name: 负载均衡
+- name: Load Balancing
   type: load-balance
   url: https://www.gstatic.com/generate_204
   interval: 300
@@ -988,7 +988,7 @@ proxy-groups:
     - vmess-tls-argo-$NAME
     - vmess-argo-$NAME
 
-- name: 自动选择
+- name: Automatic selection
   type: url-test
   url: https://www.gstatic.com/generate_204
   interval: 300
@@ -1000,11 +1000,11 @@ proxy-groups:
     - vmess-tls-argo-$NAME
     - vmess-argo-$NAME
     
-- name: 🌍选择代理节点
+- name: 🌍Selecting a proxy node
   type: select
   proxies:
-    - 负载均衡                                         
-    - 自动选择
+    - Load Balancing                                         
+    - Automatic selection
     - DIRECT
     - vless-reality-vision-$NAME                              
     - vmess-ws-$NAME
@@ -1014,7 +1014,7 @@ proxy-groups:
 rules:
   - GEOIP,LAN,DIRECT
   - GEOIP,CN,DIRECT
-  - MATCH,🌍选择代理节点
+  - MATCH,🌍Selecting a proxy node
   
 EOF
 sleep 2
@@ -1023,33 +1023,33 @@ rm -rf sb.log core tunnel.yml tunnel.json fake_useragent_0.2.0.json
 
 showlist(){
 if [[ -e $WORKDIR/list.txt ]]; then
-green "查看节点及proxyip/非标端口反代ip信息"
+green "View node and proxyip/non-standard port reverse ip information"
 cat $WORKDIR/list.txt
 else
-red "未安装sing-box" && exit
+red "sing-box is not installed" && exit
 fi
 }
 
 showsbclash(){
 if [[ -e $WORKDIR/sing_box.json ]]; then
-green "Sing_box配置文件如下，可上传到订阅类客户端上使用："
-yellow "其中Argo节点为CDN优选IP节点，server地址可自行修改优选IP/域名，被墙依旧能用！"
+green "The Sing_box configuration file is as follows, which can be uploaded to the subscription client for use:"
+yellow "Among them, the Argo node is the CDN preferred IP node, and the server address can be modified by the preferred IP/domain name, and it can still be used even if blocked！"
 sleep 2
 cat $WORKDIR/sing_box.json 
 echo
 echo
-green "Clash_meta配置文件如下，可上传到订阅类客户端上使用："
-yellow "其中Argo节点为CDN优选IP节点，server地址可自行修改优选IP/域名，被墙依旧能用！"
+green "The Clash_meta configuration file is as follows and can be uploaded to the subscription client for use："
+yellow "Argo nodes are CDN preferred IP nodes. The server address can be modified to the preferred IP/domain name. It can still be used even if blocked！"
 sleep 2
 cat $WORKDIR/clash_meta.yaml
 echo
 else
-red "未安装sing-box" && exit
+red "sing-box not installed" && exit
 fi
 }
 
 servkeep() {
-green "安装进程保活"
+green "Keep the installation process alive"
 curl -sSL https://raw.githubusercontent.com/yonggekkk/sing-box-yg/main/serv00keep.sh -o serv00keep.sh && chmod +x serv00keep.sh
 sed -i '' -e "14s|''|'$UUID'|" serv00keep.sh
 sed -i '' -e "17s|''|'$vless_port'|" serv00keep.sh
@@ -1069,7 +1069,7 @@ check_process="! ps aux | grep '[c]onfig' > /dev/null || ! ps aux | grep [t]oken
 fi
 (crontab -l 2>/dev/null; echo "*/2 * * * * if $check_process; then /bin/bash serv00keep.sh; fi") | crontab -
 fi
-green "主进程+Argo进程保活安装完毕，默认每2分钟执行一次，运行 crontab -e 可自行修改保活执行间隔" && sleep 2
+green "The main process + Argo process keepalive installation is complete. By default, it is executed every 2 minutes. You can modify the keepalive execution interval by running crontab -e" && sleep 2
 }
 
 okip(){
@@ -1097,25 +1097,25 @@ okip(){
 menu() {
    clear
    echo "========================================================="
-   purple "修改自Serv00|ct8老王sing-box安装脚本"
-   purple "转载请著名出自老王，请勿滥用"
-   green "甬哥Github项目  ：github.com/yonggekkk"
-   green "甬哥Blogger博客 ：ygkkk.blogspot.com"
-   green "甬哥YouTube频道 ：www.youtube.com/@ygkkk"
-   green "一键三协议共存：vless-reality、Vmess-ws(Argo)、hysteria2"
-   green "当前脚本版本：V25.1.8  快捷方式：bash serv00.sh"
-   echo "========================================================="
-   green  "1. 安装sing-box"
-   echo   "---------------------------------------------------------"
-   red    "2. 卸载sing-box"
-   echo   "---------------------------------------------------------"
-   green  "3. 查看节点及proxyip/非标端口反代ip"
-   echo   "---------------------------------------------------------"
-   green  "4. 查看sing-box与clash-meta配置文件"
-   echo   "---------------------------------------------------------"
-   yellow "5. 重置并清理所有服务进程(系统初始化)"
-   echo   "---------------------------------------------------------"
-   red    "0. 退出脚本"
+   purple "Modified from Serv00|ct8 Lao Wang sing-box installation script"
+purple "Please indicate the source from Lao Wang when reprinting, do not abuse"
+green "Yongge Github project: github.com/yonggekkk"
+green "Yongge Blogger blog: ygkkk.blogspot.com"
+green "Yongge YouTube channel: www.youtube.com/@ygkkk"
+green "One-click three protocols coexist: vless-reality, Vmess-ws (Argo), hysteria2"
+green "Current script version: V25.1.8 shortcut: bash serv00.sh"
+echo "========================================================="
+green "1. Install sing-box"
+echo "---------------------------------------------------------"
+red "2. Uninstall sing-box"
+echo "---------------------------------------------------------"
+green "3. Check nodes and proxyip/non-standard port reverse ip"
+echo "---------------------------------------------------------"
+green "4. Check sing-box and clash-meta configuration files"
+echo "---------------------------------------------------------"
+yellow "5. Reset and clean up all service processes (system initialization)"
+echo "---------------------------------------------------------"
+red "0. Exit script"
    echo   "========================================================="
 nb=$(echo "$HOSTNAME" | cut -d '.' -f 1 | tr -d 's')
 ym=("$HOSTNAME" "cache$nb.serv00.com" "web$nb.serv00.com")
@@ -1134,30 +1134,30 @@ echo "$response" | while IFS='|' read -r ip status; do
 if [[ $status == "Accessible" ]]; then
 echo "$ip: 可用"  >> $WORKDIR/ip.txt
 else
-echo "$ip: 被墙 (Argo与CDN回源节点、proxyip依旧有效)"  >> $WORKDIR/ip.txt
+echo "$ip: Blocked (Argo and CDN back-to-origin nodes, proxyip are still valid)"  >> $WORKDIR/ip.txt
 fi	
 done
 fi
 done
 snb=$(hostname | awk -F '.' '{print $1}')
-green "Serv00服务器名称：$snb"
-green "当前可选择的IP如下："
+green "Serv00 server name: $snb"
+green "The currently selectable IPs are as follows："
 cat $WORKDIR/ip.txt
 echo
 if [[ -e $WORKDIR/list.txt ]]; then
-green "已安装sing-box"
-ps aux | grep '[c]onfig' > /dev/null && green "主进程运行正常" || yellow "主进程启动中…………2分钟后可再次进入脚本查看"
+green "sing-box installed"
+ps aux | grep '[c]onfig' > /dev/null && green "The main process is running normally" || yellow "The main process is starting…………You can enter the script again after 2 minutes to view it"
 if [ -f "$WORKDIR/boot.log" ] && grep -q "trycloudflare.com" "$WORKDIR/boot.log" 2>/dev/null && ps aux | grep [l]ocalhost > /dev/null; then
-green "当前Argo临时域名：$(grep -oE 'https://[[:alnum:]+\.-]+\.trycloudflare\.com' $WORKDIR/boot.log 2>/dev/null | sed 's@https://@@')"
+green "Current Argo temporary domain name：$(grep -oE 'https://[[:alnum:]+\.-]+\.trycloudflare\.com' $WORKDIR/boot.log 2>/dev/null | sed 's@https://@@')"
 fi
 if [ -f "$WORKDIR/boot.log" ] && ! ps aux | grep [l]ocalhost > /dev/null; then
-yellow "当前Argo临时域名暂时不存在，后台会继续生成有效的临时域名，稍后可再次进入脚本查看"
+yellow "The current Argo temporary domain name does not exist. The background will continue to generate a valid temporary domain name. You can enter the script again later to view it"
 fi
 if ps aux | grep [t]oken > /dev/null; then
-green "当前Argo固定域名：$(cat $WORKDIR/gdym.log 2>/dev/null)"
+green "Current Argo fixed domain nam：$(cat $WORKDIR/gdym.log 2>/dev/null)"
 fi
 if [ ! -f "$WORKDIR/boot.log" ] && ! ps aux | grep [t]oken > /dev/null; then
-yellow "当前Argo固定域名：$(cat $WORKDIR/gdym.log 2>/dev/null)，请检查相关参数是否输入有误，建议卸载重装"
+yellow "The current Argo fixed domain name is: $(cat $WORKDIR/gdym.log 2>/dev/null). Please check whether the relevant parameters are entered correctly. It is recommended to uninstall and reinstall"
 fi
 if ! crontab -l 2>/dev/null | grep -q 'serv00keep'; then
 if [ -f "$WORKDIR/boot.log" ] || grep -q "trycloudflare.com" "$WORKDIR/boot.log" 2>/dev/null; then
@@ -1166,17 +1166,17 @@ else
 check_process="! ps aux | grep '[c]onfig' > /dev/null || ! ps aux | grep [t]oken > /dev/null"
 fi
 (crontab -l 2>/dev/null; echo "*/2 * * * * if $check_process; then /bin/bash serv00keep.sh; fi") | crontab -
-yellow "发现Cron保活可能被重置清空！现已修复成功！"
-yellow "主进程与Argo进程启动中…………2分钟后可再次进入脚本查看"
+yellow "Found that Cron keepalive may be reset and cleared! Now it has been repaired successfully! "
+yellow "The main process and Argo process are starting... You can enter the script again after 2 minutes to view"
 else
-green "Cron保活运行正常"
+green "Cron keepalive is running normally"
 fi
 else
-red "未安装sing-box，请选择 1 进行安装" 
+red "sing-box is not installed, please select 1 to install" 
 fi
 curl -sSL https://raw.githubusercontent.com/yonggekkk/sing-box-yg/main/serv00.sh -o serv00.sh && chmod +x serv00.sh
    echo   "========================================================="
-   reading "请输入选择【0-5】: " choice
+   reading "Please enter your choice【0-5】: " choice
    echo ""
     case "${choice}" in
         1) install_singbox ;;
@@ -1185,7 +1185,7 @@ curl -sSL https://raw.githubusercontent.com/yonggekkk/sing-box-yg/main/serv00.sh
 	4) showsbclash ;;
         5) kill_all_tasks ;;
 	0) exit 0 ;;
-        *) red "无效的选项，请输入 0 到 5" ;;
+        *) red "Invalid option, please enter 0 to 5" ;;
     esac
 }
 menu
