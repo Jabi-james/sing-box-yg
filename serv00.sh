@@ -496,7 +496,7 @@ $vl_link
 Note: If the reality domain name entered previously is a CF domain name, the following functions will be activated:
 It can be applied to create a CF vless/trojan node in the https://github.com/yonggekkk/Cloudflare_vless_trojan project
 1. The Proxyip (with port) information is as follows:
-Method 1 Global application: Set variable name: proxyip Set variable value: $IP:$vless_port
+Method 1: Global application: Set variable name: proxyip Set variable value: $IP:$vless_port
 Method 2: Single-node application: path is changed to: /pyip=$IP:$vless_port
 TLS of CF node can be turned on or off
 The area where CF node lands on CF website is: $IP area
