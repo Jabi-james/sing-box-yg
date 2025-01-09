@@ -1093,15 +1093,13 @@ okip(){
     echo "$IP"
     }
 
-#主菜单
+#Main Menu
 menu() {
    clear
    echo "========================================================="
    purple "Modified from Serv00|ct8 Lao Wang sing-box installation script"
 purple "Please indicate the source from Lao Wang when reprinting, do not abuse"
 green "Yongge Github project: github.com/yonggekkk"
-green "Yongge Blogger blog: ygkkk.blogspot.com"
-green "Yongge YouTube channel: www.youtube.com/@ygkkk"
 green "One-click three protocols coexist: vless-reality, Vmess-ws (Argo), hysteria2"
 green "Current script version: V25.1.8 shortcut: bash serv00.sh"
 echo "========================================================="
@@ -1132,7 +1130,7 @@ break
 else
 echo "$response" | while IFS='|' read -r ip status; do
 if [[ $status == "Accessible" ]]; then
-echo "$ip: 可用"  >> $WORKDIR/ip.txt
+echo "$ip: Available"  >> $WORKDIR/ip.txt
 else
 echo "$ip: Blocked (Argo and CDN back-to-origin nodes, proxyip are still valid)"  >> $WORKDIR/ip.txt
 fi	
@@ -1174,7 +1172,7 @@ fi
 else
 red "sing-box is not installed, please select 1 to install" 
 fi
-curl -sSL https://raw.githubusercontent.com/yonggekkk/sing-box-yg/main/serv00.sh -o serv00.sh && chmod +x serv00.sh
+curl -sSL https://raw.githubusercontent.com/Jabi-james/sing-box-yg/main/serv00.sh -o serv00.sh && chmod +x serv00.sh
    echo   "========================================================="
    reading "Please enter your choice【0-5】: " choice
    echo ""
