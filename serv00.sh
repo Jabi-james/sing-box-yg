@@ -159,7 +159,7 @@ reading "\Clean up all processes and clear all installed content. You will exit 
 # Generating argo Config
 argo_configure() {
   while true; do
-    yellow "方式一：Argo temporary tunnel (no domain name required, recommended)"
+    yellow "Method 1：Argo temporary tunnel (no domain name required, recommended)"
 yellow "Method 2: Argo fixed tunnel (domain name required, CF needs to be set to extract token)"
 echo -e "${red} Note: ${purple} When Argo fixed tunnel uses token, you need to set the tunnel port in the cloudflare backend, which must be consistent with the tcp port of vmess-ws)${re}"
 reading "Enter g to use Argo fixed tunnel, press Enter to skip to use Argo temporary tunnel [Please select g or press Enter]: " argo_choice
