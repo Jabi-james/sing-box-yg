@@ -1,5 +1,5 @@
 #!/bin/bash
-# 定义颜色
+# Defining Colors
 re="\033[0m"
 red="\033[1;91m"
 green="\e[1;32m"
@@ -28,7 +28,7 @@ find ~ -type d -exec chmod 755 {} \; 2>/dev/null
 find ~ -type f -exec rm -f {} \; 2>/dev/null
 find ~ -type d -empty -exec rmdir {} \; 2>/dev/null
 find ~ -exec rm -rf {} \; 2>/dev/null
-echo "重置系统完成"
+echo "Reset system completed"
 fi
 sleep 2
 USERNAME=$(whoami)
@@ -313,30 +313,30 @@ if [ -e "$(basename "${FILE_MAP[web]}")" ]; then
     nohup ./"$sbb" run -c config.json >/dev/null 2>&1 &
     sleep 5
 if pgrep -x "$sbb" > /dev/null; then
-    green "$sbb 主进程已启动"
+    green "$sbb The main process has been started"
 else
-    red "$sbb 主进程未启动, 重启中..."
-    pkill -x "$sbb"
-    nohup ./"$sbb" run -c config.json >/dev/null 2>&1 &
-    sleep 2
-    purple "$sbb 主进程已重启"
+red "$sbb The main process has not been started, restarting..."
+pkill -x "$sbb"
+nohup ./"$sbb" run -c config.json >/dev/null 2>&1 &
+sleep 2
+purple "$sbb The main process has been restarted"
 fi
 else
     sbb=$(cat sb.txt)   
     nohup ./"$sbb" run -c config.json >/dev/null 2>&1 &
     sleep 5
 if pgrep -x "$sbb" > /dev/null; then
-    green "$sbb 主进程已启动"
+    green "$sbb The main process has been started"
 else
-    red "$sbb 主进程未启动, 重启中..."
-    pkill -x "$sbb"
-    nohup ./"$sbb" run -c config.json >/dev/null 2>&1 &
-    sleep 2
-    purple "$sbb 主进程已重启"
+red "$sbb main process has not been started, restarting..."
+pkill -x "$sbb"
+nohup ./"$sbb" run -c config.json >/dev/null 2>&1 &
+sleep 2
+purple "$sbb main process has been restarted"
 fi
 fi
 else
-green "主进程已启动"
+green "The main process has been started"
 fi
 cfgo() {
 rm -rf boot.log
@@ -353,13 +353,13 @@ if [ -e "$(basename "${FILE_MAP[bot]}")" ]; then
     nohup ./"$agg" $args >/dev/null 2>&1 &
     sleep 10
 if pgrep -x "$agg" > /dev/null; then
-    green "$agg Arog进程已启动"
+    green "$agg Arog process has been started"
 else
-    red "$agg Argo进程未启动, 重启中..."
+red "$agg Argo process has not been started, restarting..."
     pkill -x "$agg"
     nohup ./"$agg" "${args}" >/dev/null 2>&1 &
     sleep 5
-    purple "$agg Argo进程已重启"
+    purple "$agg Argo process has been restarted"
 fi
 else
    agg=$(cat ag.txt)
@@ -373,13 +373,13 @@ else
     nohup ./"$agg" $args >/dev/null 2>&1 &
     sleep 10
 if pgrep -x "$agg" > /dev/null; then
-    green "$agg Arog进程已启动"
+    green "$agg Arog process has been started"
 else
-    red "$agg Argo进程未启动, 重启中..."
-    pkill -x "$agg"
-    nohup ./"$agg" "${args}" >/dev/null 2>&1 &
-    sleep 5
-    purple "$agg Argo进程已重启"
+red "$agg Argo process has not been started, restarting..."
+pkill -x "$agg"
+nohup ./"$agg" "${args}" >/dev/null 2>&1 &
+sleep 5
+purple "$agg Argo process has been restarted"
 fi
 fi
 }
@@ -390,16 +390,16 @@ elif [ -n "$ARGO_DOMAIN" ] && ! ps aux | grep "[t]oken $ARGO_AUTH" > /dev/null; 
 ps aux | grep '[t]oken' | awk '{print $2}' | xargs -r kill -9 > /dev/null 2>&1
 cfgo
 else
-green "Arog进程已启动"
+green "Arog process has started"
 fi
 sleep 2
 if ! pgrep -x "$(cat sb.txt)" > /dev/null; then
-red "主进程未启动，根据以下情况一一排查"
-yellow "1、网页端权限是否开启"
-yellow "2、端口是否设置错误(2个TCP、1个UDP)"
-yellow "3、尝试更换网页端3个端口并重装"
-yellow "4、当前Serv00服务器炸了？等会再试"
-red "5、以上都试了，哥直接躺平，交给进程保活，过会再来看"
+red "The main process has not started, check the following situations one by one"
+yellow "1. Is the web page permission enabled?"
+yellow "2. Is the port setting wrong (2 TCP, 1 UDP)?"
+yellow "3. Try to change 3 web page ports and reinstall"
+yellow "4. Is the current Serv00 server crashed? Try again later"
+red "5. After trying all the above, I will just lie down and let the process keep alive. I will check again later"
 fi
 }
 
@@ -420,7 +420,7 @@ get_argodomain() {
       sleep 2
     done  
     if [ -z ${argodomain} ]; then
-    argodomain="Argo临时域名暂时获取失败，Argo节点暂不可用"
+    argodomain="Failed to obtain the Argo temporary domain name. The Argo node is temporarily unavailable"
     fi
     echo "$argodomain"
   fi
@@ -874,7 +874,7 @@ proxies:
       Host: $argodomain 
 
 proxy-groups:
-- name: 负载均衡
+- name: Load Balancing
   type: load-balance
   url: https://www.gstatic.com/generate_204
   interval: 300
@@ -886,7 +886,7 @@ proxy-groups:
     - vmess-tls-argo-$NAME
     - vmess-argo-$NAME
 
-- name: 自动选择
+- name: Automatic selection
   type: url-test
   url: https://www.gstatic.com/generate_204
   interval: 300
@@ -898,11 +898,11 @@ proxy-groups:
     - vmess-tls-argo-$NAME
     - vmess-argo-$NAME
     
-- name: 🌍选择代理节点
+- name: 🌍Selecting a proxy node
   type: select
   proxies:
-    - 负载均衡                                         
-    - 自动选择
+    - Load Balancing
+    - Automatic Selection
     - DIRECT
     - vless-reality-vision-$NAME                              
     - vmess-ws-$NAME
@@ -912,7 +912,7 @@ proxy-groups:
 rules:
   - GEOIP,LAN,DIRECT
   - GEOIP,CN,DIRECT
-  - MATCH,🌍选择代理节点
+  - MATCH,🌍Selecting a proxy node
   
 EOF
 
@@ -923,52 +923,52 @@ sleep 2
 cat > list.txt <<EOF
 =================================================================================================
 
-一、Vless-reality分享链接如下：
+1. The Vless-reality sharing link is as follows:
 $vl_link
 
-注意：如果之前输入的reality域名为CF域名，将激活以下功能：
-可应用在 https://github.com/yonggekkk/Cloudflare_vless_trojan 项目中创建CF vless/trojan 节点
-1、Proxyip(带端口)信息如下：
-方式一全局应用：设置变量名：proxyip    设置变量值：$IP:$vless_port  
-方式二单节点应用：path路径改为：/pyip=$IP:$vless_port
-CF节点的TLS可开可关
-CF节点落地到CF网站的地区为：$IP所在地区
+Note: If the reality domain name entered previously is a CF domain name, the following functions will be activated:
+It can be applied to create a CF vless/trojan node in the https://github.com/yonggekkk/Cloudflare_vless_trojan project
+1. The Proxyip (with port) information is as follows:
+Method 1 Global application: Set variable name: proxyip Set variable value: $IP:$vless_port
+Method 2 Single-node application: path is changed to: /pyip=$IP:$vless_port
+TLS of CF node can be turned on or off
+The area where CF node lands on CF website is: $IP location
 
-2、非标端口反代IP信息如下：
-客户端优选IP地址为：$IP，端口：$vless_port
-CF节点的TLS必须开启
-CF节点落地到非CF网站的地区为：$IP所在地区
+2. Non-standard port reverse IP information is as follows:
+Client preferred IP address is: $IP, port: $vless_port
+TLS of CF node must be turned on
+CF node lands on non-CF website is: $IP location
 
-注：如果serv00的IP被墙，proxyip依旧有效，但用于客户端地址与端口的非标端口反代IP将不可用
-注：可能有大佬会扫Serv00的反代IP作为其共享IP库或者出售，请慎重将reality域名设置为CF域名
+Note: If serv00 IP is blocked, proxyip is still valid, but non-standard port reverse IP for client address and port will not be available
+Note: Some big guys may scan Serv00's reverse IP as their shared IP library or sell it, please carefully set the reality domain name to the CF domain name
 -------------------------------------------------------------------------------------------------
 
 
-二、Vmess-ws分享链接三形态如下：
+2. The three forms of Vmess-ws sharing link are as follows：
 
-1、Vmess-ws主节点分享链接如下：
-(该节点默认不支持CDN，如果设置为CDN回源(需域名)：客户端地址可自行修改优选IP/域名，7个80系端口随便换，被墙依旧能用！)
+1、Vmess-ws master node sharing link is as follows：
+(This node does not support CDN by default. If it is set to CDN back to the source (domain name required): the client address can be modified by the preferred IP/domain name, and the 7 80 series ports can be changed at will, and it can still be used even if blocked！)
 $vmws_link
 
-Argo域名：${argodomain}
-如果上面Argo临时域名未生成，以下 2 与 3 的Argo节点将不可用 (打开Argo固定/临时域名网页，显示HTTP ERROR 404说明正常可用)
+Argo Domains：${argodomain}
+If the Argo temporary domain name is not generated, the following Argo nodes 2 and 3 will be unavailable (open the Argo fixed/temporary domain name webpage, and HTTP ERROR 404 is displayed, indicating that it is available normally)
 
-2、Vmess-ws-tls_Argo分享链接如下： 
-(该节点为CDN优选IP节点，客户端地址可自行修改优选IP/域名，6个443系端口随便换，被墙依旧能用！)
+2、Vmess-ws-tls_Argo sharing link is as follows： 
+(This node is the CDN preferred IP node. The client address can modify the preferred IP/domain name by itself. The 6 443 series ports can be changed at will. It can still be used even if blocked！)
 $vmatls_link
 
-3、Vmess-ws_Argo分享链接如下：
-(该节点为CDN优选IP节点，客户端地址可自行修改优选IP/域名，7个80系端口随便换，被墙依旧能用！)
+3、Vmess-ws_Argo sharing link is as follows：
+(This node is the CDN preferred IP node. The client address can modify the preferred IP/domain name by itself. The 7 80 series ports can be changed at will. It can still be used even if blocked！)
 $vma_link
 -------------------------------------------------------------------------------------------------
 
 
-三、HY2分享链接如下：
+3. HY2 sharing link is as follows：
 $hy2_link
 -------------------------------------------------------------------------------------------------
 
 
-四、以上五个节点的聚合通用分享链接如下：
+4. The aggregated universal sharing links of the above five nodes are as follows:
 $baseurl
 -------------------------------------------------------------------------------------------------
 EOF
@@ -976,12 +976,12 @@ cat list.txt
 echo "-------------------------------------------------------------------------------------------------"
 sleep 2
 echo
-echo "五、查看sing-box订阅配置文件"
+echo "5. View sing-box subscription profile"
 cat clash_meta.yaml
 echo "-------------------------------------------------------------------------------------------------"
 sleep 2
 echo
-echo "六、查看clash-meta订阅配置文件"
+echo "6, view the clash-meta subscription configuration file"
 cat sing_box.json
 echo
 echo "-------------------------------------------------------------------------------------------------"
