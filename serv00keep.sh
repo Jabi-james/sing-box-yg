@@ -694,27 +694,20 @@ cat > sing_box.json <<EOF
   ],
   "route": {
       "rule_set": [
+        
             {
-                "tag": "geosite-geolocation-!cn",
+                "tag": "geosite-ir",
                 "type": "remote",
                 "format": "binary",
-                "url": "https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/geolocation-!cn.srs",
+                "url": "https://raw.githubusercontent.com/Chocolate4U/Iran-sing-box-rules/rule-set/geosite-ir.srs",
                 "download_detour": "select",
                 "update_interval": "1d"
             },
             {
-                "tag": "geosite-cn",
+                "tag": "geoip-ir",
                 "type": "remote",
                 "format": "binary",
-                "url": "https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geosite/geolocation-cn.srs",
-                "download_detour": "select",
-                "update_interval": "1d"
-            },
-            {
-                "tag": "geoip-cn",
-                "type": "remote",
-                "format": "binary",
-                "url": "https://cdn.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@sing/geo/geoip/cn.srs",
+                "url": "https://raw.githubusercontent.com/Chocolate4U/Iran-sing-box-rules/rule-set/geoip-ir.srs",
                 "download_detour": "select",
                 "update_interval": "1d"
             }
@@ -744,21 +737,17 @@ cat > sing_box.json <<EOF
         "outbound": "select"
       },
       {
-        "rule_set": "geoip-cn",
+        "rule_set": "geoip-ir",
         "outbound": "direct"
       },
       {
-        "rule_set": "geosite-cn",
+        "rule_set": "geosite-ir",
         "outbound": "direct"
       },
       {
       "ip_is_private": true,
       "outbound": "direct"
       },
-      {
-        "rule_set": "geosite-geolocation-!cn",
-        "outbound": "select"
-      }
     ]
   },
     "ntp": {
@@ -795,7 +784,7 @@ dns:
     - tls://dns.google
   fallback-filter:
     geoip: true
-    geoip-code: CN
+    geoip-code: IR
     ipcidr:
       - 240.0.0.0/4
 
@@ -911,7 +900,7 @@ proxy-groups:
     - vmess-argo-$NAME
 rules:
   - GEOIP,LAN,DIRECT
-  - GEOIP,CN,DIRECT
+  - GEOIP,IR,DIRECT
   - MATCH,🌍Selecting a proxy node
   
 EOF
