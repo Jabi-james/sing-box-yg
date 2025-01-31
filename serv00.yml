@@ -17,8 +17,6 @@ sshpass -p "$SSH_PASS" ssh -o StrictHostKeyChecking=no "$SSH_USER@$HOST" "$remot
 echo "*****************************************************"
 echo "*********************************************************"
 echo "Yongge Github Project: github.com/yonggekkk"
-echo "Yongge Blogger Blog: ygkkk.blogspot.com"
-echo "Yongge YouTube Channel: www.youtube.com/@ygkkk"
 echo "Automatically remotely deploy and keep alive Serv00 three-in-one protocol script [Github]"
 echo "Version: V25.1.22"
 echo "********************************************************"
