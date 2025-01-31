@@ -20,7 +20,7 @@ read_ip() {
 cat ip.txt
 reading "Please enter any one of the three IPs above (it is recommended to press Enter to automatically select an available IP by default): " IP
 if [[ -z "$IP" ]]; then
-IP=$(grep -m 1 "可用" ip.txt | awk -F ':' '{print $1}')
+IP=$(grep -m 1 "Available" ip.txt | awk -F ':' '{print $1}')
 if [ -z "$IP" ]; then
 IP=$(okip)
 if [ -z "$IP" ]; then
@@ -472,19 +472,19 @@ if [ -e "$(basename "${FILE_MAP[web]}")" ]; then
     nohup ./"$sbb" run -c config.json >/dev/null 2>&1 &
     sleep 5
 if pgrep -x "$sbb" > /dev/null; then
-    green "$sbb 主进程已启动"
+    green "$sbb The main process has been started"
 else
 for ((i=1; i<=5; i++)); do
-    red "$sbb 主进程未启动, 重启中... (尝试次数: $i)"
-    pkill -x "$sbb"
-    nohup ./"$sbb" run -c config.json >/dev/null 2>&1 &
-    sleep 5
-    if pgrep -x "$sbb" > /dev/null; then
-        purple "$sbb 主进程已成功重启"
+red "$sbb The main process has not been started, restarting... (Number of attempts: $i)"
+pkill -x "$sbb"
+nohup ./"$sbb" run -c config.json >/dev/null 2>&1 &
+sleep 5
+if pgrep -x "$sbb" > /dev/null; then
+purple "$sbb The main process has been successfully restarted"
         break
     fi
     if [[ $i -eq 5 ]]; then
-        red "$sbb 主进程重启失败"
+        red "$sbb Master process restart faile"
     fi
 done
 fi
@@ -506,9 +506,9 @@ if [ -e "$(basename "${FILE_MAP[bot]}")" ]; then
     nohup ./"$agg" $args >/dev/null 2>&1 &
     sleep 10
 if pgrep -x "$agg" > /dev/null; then
-    green "$agg Argo进程已启动"
+    green "$agg Argo process has started"
 else
-    red "$agg Argo进程未启动, 重启中..."
+red "$agg Argo process has not started, restarting..."
     pkill -x "$agg"
     nohup ./"$agg" "${args}" >/dev/null 2>&1 &
     sleep 5
@@ -1186,7 +1186,7 @@ npm install basic-auth express dotenv axios --silent > /dev/null 2>&1
 rm $HOME/domains/${USERNAME}.${USERNAME}.serv00.net/public_nodejs/public/index.html > /dev/null 2>&1
 devil www restart ${USERNAME}.${USERNAME}.serv00.net
 rm -rf $HOME/domains/${USERNAME}.${USERNAME}.serv00.net/logs/*
-green "安装完毕，保活网页：http://${USERNAME}.${USERNAME}.serv00.net/up ，Open it once and it will automatically keep alive every 3 minutes by default" && sleep 2
+green "Installation complete, keep the web page alive：http://${USERNAME}.${USERNAME}.serv00.net/up ，Open it once and it will automatically keep alive every 3 minutes by default" && sleep 2
 }
 
 okip(){
@@ -1256,7 +1256,7 @@ done
 fi
 done
 snb=$(hostname | awk -F '.' '{print $1}')
-green "Serv00服务器Server Name名称：$snb"
+green "Serv00 Server Name：$snb"
 green "The currently available IP addresses are as follows："
 cat $WORKDIR/ip.txt
 echo
