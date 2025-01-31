@@ -1256,8 +1256,8 @@ done
 fi
 done
 snb=$(hostname | awk -F '.' '{print $1}')
-green "Serv00服务器名称：$snb"
-green "当前可选择的IP如下："
+green "Serv00服务器Server Name名称：$snb"
+green "The currently available IP addresses are as follows："
 cat $WORKDIR/ip.txt
 echo
 if [[ -e $WORKDIR/list.txt ]]; then
