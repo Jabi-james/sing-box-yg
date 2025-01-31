@@ -1,0 +1,69 @@
+Sing-box official SFA/SFI/SFW client configuration brief description
+Xiaobai key point operation guide V23.11.15 (updated from time to time)
+
+Note: Xiaobai only needs to change the node area and diversion group in his sing-box configuration file
+------------------------------------------------------------------------------------
+Node area
+------------------------------------------------------------------------------------
+I. vless-reality-vision node
+------------------------------------------------------------------------------------
+{
+"type": "vless",
+"tag": "vless-sb", custom node name
+"server": "1.2.3.4", server local ip
+"server_port": 12345, custom port
+"uuid": "658ff7f4-0448-4368-a104-c3108517f56a", custom uuid
+"flow": "xtls-rprx-vision",
+"tls": {
+"enabled": true,
+"server_name": "www.yahoo.com", custom third-party stolen domain name
+"utls": {
+"enabled": true,
+"fingerprint": "chrome"
+},
+"reality": {
+"enabled": true,
+"public_key": "oBwBeiq8MjOqHS0fTXm39gRM_fdXgbAvtEWfAaW", custom public-key
+"short_id": "91b4db47" custom short-id
+}
+}
+},
+
+------------------------------------------------------------------------------------
+
+2. vmess-ws(tls)+argo node
+------------------------------------------------------------------------------------
+{
+"server": "1.2.3.4", server local ip, resolved domain name, preferred IP, preferred domain name
+"server_port": 12345, custom port, vps-cdn and argo-cdn, pay attention to 13 port changes
+"tag": "vmess-sb", Custom node name
+"tls": {
+"enabled": true, tls enabled: true tls disabled: false
+"server_name": "yg.ygkkk.eu.org", tls enabled: resolved domain name or argo domain name
+"insecure": false,
+"utls": {
+"enabled": true,
+"fingerprint": "chrome"
+}
+},
+"transport": {
+"headers": {
+"Host": [
+"yg.ygkkk.eu.org" resolved domain name or argo domain name
+]
+},
+"path": "658ff7f4-0448-4368-a104-c3108517f56a-vm", custom uuid value - vm
+"type": "ws"
+},
+"type": "vmess",
+"security": "auto",
+"uuid": "658ff7f4-0448-4368-a104-c3108517f56a" custom uuid
+},
+
+------------------------------------------------------------------------------------
+"tuic5-sb", custom node name
+        "cf-vless-sb"          自定义节点名称
+          ………………               ………… 
+      ]
+    },
+------------------------------------------------------------------------------------
