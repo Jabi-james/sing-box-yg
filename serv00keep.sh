@@ -1,5 +1,5 @@
 #!/bin/bash
-# 定义颜色
+# Defining Colors
 re="\033[0m"
 red="\033[1;91m"
 green="\e[1;32m"
@@ -37,7 +37,7 @@ find ~ -type d -exec chmod 755 {} \; 2>/dev/null
 find ~ -type f -exec rm -f {} \; 2>/dev/null
 find ~ -type d -empty -exec rmdir {} \; 2>/dev/null
 find ~ -exec rm -rf {} \; 2>/dev/null
-echo "重置系统完成"
+echo "Reset system completed"
 fi
 devil www add ${USERNAME}.serv00.net php > /dev/null 2>&1
 FILE_PATH="${HOME}/domains/${USERNAME}.serv00.net/public_html"
@@ -91,12 +91,12 @@ fi
 resallport(){
 portlist=$(devil port list | grep -E '^[0-9]+[[:space:]]+[a-zA-Z]+' | sed 's/^[[:space:]]*//')
 if [[ -z "$portlist" ]]; then
-yellow "无端口"
+yellow "No Port"
 else
 while read -r line; do
 port=$(echo "$line" | awk '{print $1}')
 port_type=$(echo "$line" | awk '{print $2}')
-yellow "删除端口 $port ($port_type)"
+yellow "Deleting a Port $port ($port_type)"
 devil port del "$port_type" "$port"
 done <<< "$portlist"
 fi
@@ -145,13 +145,13 @@ tcp_ports=$(echo "$port_list" | grep -c "tcp")
 udp_ports=$(echo "$port_list" | grep -c "udp")
 
 if [[ $tcp_ports -ne 2 || $udp_ports -ne 1 ]]; then
-    echo "端口数量不符合要求，正在调整..."
+    echo "The number of ports does not meet the requirement and is being adjusted..."
 
     if [[ $tcp_ports -gt 2 ]]; then
         tcp_to_delete=$((tcp_ports - 2))
         echo "$port_list" | awk '/tcp/ {print $1, $2}' | head -n $tcp_to_delete | while read port type; do
             devil port del $type $port
-            echo "已删除TCP端口: $port"
+            echo "Deleted TCP port: $port"
         done
     fi
 
@@ -159,7 +159,7 @@ if [[ $tcp_ports -ne 2 || $udp_ports -ne 1 ]]; then
         udp_to_delete=$((udp_ports - 1))
         echo "$port_list" | awk '/udp/ {print $1, $2}' | head -n $udp_to_delete | while read port type; do
             devil port del $type $port
-            echo "已删除UDP端口: $port"
+            echo "Deleted UDP port: $port"
         done
     fi
 
@@ -170,7 +170,7 @@ if [[ $tcp_ports -ne 2 || $udp_ports -ne 1 ]]; then
             tcp_port=$(shuf -i 10000-65535 -n 1) 
             result=$(devil port add tcp $tcp_port 2>&1)
             if [[ $result == *"succesfully"* ]]; then
-                echo "已添加TCP端口: $tcp_port"
+                echo "TCP port added: $tcp_port"
                 if [[ $tcp_ports_added -eq 0 ]]; then
                     tcp_port1=$tcp_port
                 else
@@ -178,7 +178,7 @@ if [[ $tcp_ports -ne 2 || $udp_ports -ne 1 ]]; then
                 fi
                 tcp_ports_added=$((tcp_ports_added + 1))
             else
-                echo "端口 $tcp_port 不可用，尝试其他端口..."
+                echo "Port $tcp_port is not available, try another port..."
             fi
         done
     fi
@@ -188,14 +188,14 @@ if [[ $tcp_ports -ne 2 || $udp_ports -ne 1 ]]; then
             udp_port=$(shuf -i 10000-65535 -n 1) 
             result=$(devil port add udp $udp_port 2>&1)
             if [[ $result == *"succesfully"* ]]; then
-                echo "已添加UDP端口: $udp_port"
+                echo "UDP port added: $udp_port"
                 break
             else
-                echo "端口 $udp_port 不可用，尝试其他端口..."
+                echo "Port $udp_port is not available, try another port..."
             fi
         done
     fi
-    #echo "端口已调整完成,将断开ssh连接"
+    #echo "The port has been adjusted and the ssh connection will be disconnected"
     sleep 3
     #devil binexec on >/dev/null 2>&1
     #kill -9 $(ps -o ppid= -p $$) >/dev/null 2>&1
@@ -205,9 +205,9 @@ else
     tcp_port2=$(echo "$tcp_ports" | sed -n '2p')
     udp_port=$(echo "$port_list" | awk '/udp/ {print $1}')
 
-    echo "你的vless-reality的TCP端口: $tcp_port1" 
-    echo "你的vmess的TCP端口(设置Argo固定域名端口)：$tcp_port2"
-    echo "你的hysteria2的UDP端口: $udp_port"
+echo "your vless-reality TCP port: $tcp_port1"
+echo "your vmess TCP port (set Argo fixed domain name port): $tcp_port2"
+echo "your hysteria2 UDP port: $udp_port"
 fi
 export vless_port=$tcp_port1
 export vmess_port=$tcp_port2
@@ -231,7 +231,7 @@ get_argodomain() {
       sleep 2
     done  
     if [ -z ${argodomain} ]; then
-    argodomain="Argo临时域名暂时获取失败，Argo节点暂不可用"
+    argodomain="Failed to obtain the Argo temporary domain name. The Argo node is temporarily unavailable"
     fi
     echo "$argodomain"
   fi
@@ -252,7 +252,7 @@ declare -f resallport >> webport.sh
 declare -f check_port >> webport.sh
 echo 'resallport' >> webport.sh
 chmod +x webport.sh
-green "开始安装多功能主页，请稍等……"
+green "Start installing the multi-function homepage, please wait……"
 devil www del ${snb}.${USERNAME}.serv00.net > /dev/null 2>&1
 devil www add ${USERNAME}.serv00.net php > /dev/null 2>&1
 devil www add ${snb}.${USERNAME}.serv00.net nodejs /usr/local/bin/node18 > /dev/null 2>&1
@@ -266,18 +266,19 @@ cd "$keep_path"
 npm install basic-auth express dotenv axios --silent > /dev/null 2>&1
 rm $HOME/domains/${snb}.${USERNAME}.serv00.net/public_nodejs/public/index.html > /dev/null 2>&1
 devil www restart ${snb}.${USERNAME}.serv00.net
-green "安装完毕，多功能主页地址：http://${snb}.${USERNAME}.serv00.net"
+green "Installation completed, multi-function homepage address：http://${snb}.${USERNAME}.serv00.net"
 fi
 
 if [[ "$resport" =~ ^[Yy]$ ]]; then
 portlist=$(devil port list | grep -E '^[0-9]+[[:space:]]+[a-zA-Z]+' | sed 's/^[[:space:]]*//')
 if [[ -z "$portlist" ]]; then
-yellow "无端口"
+yellow "No port"
 else
 while read -r line; do
 port=$(echo "$line" | awk '{print $1}')
 port_type=$(echo "$line" | awk '{print $2}')
-yellow "删除端口 $port ($port_type)"
+yellow "Deleting a Port
+$port ($port_type)"
 devil port del "$port_type" "$port"
 done <<< "$portlist"
 fi
@@ -298,7 +299,7 @@ while IFS='|' read -r ip status; do
 if [[ $status == "Accessible" ]]; then
 echo "$ip: 可用" >> ip.txt
 else
-echo "$ip: 被墙 (Argo与CDN回源节点、proxyip依旧有效)" >> ip.txt
+echo "$ip: Blocked (Argo and CDN back-to-origin nodes, proxyip are still valid)" >> ip.txt
 fi	
 done <<< "$response"
 fi
@@ -307,7 +308,7 @@ if [[ ! "$response" =~ (unknown|not|error) ]]; then
 grep ':' $WORKDIR/ip.txt | sort -u -o $WORKDIR/ip.txt
 fi
 if [[ -z "$IP" ]]; then
-IP=$(grep -m 1 "可用" ip.txt | awk -F ':' '{print $1}')
+IP=$(grep -m 1 "Available" ip.txt | awk -F ':' '{print $1}')
 if [ -z "$IP" ]; then
 IP=$(okip)
 if [ -z "$IP" ]; then
@@ -567,30 +568,31 @@ if [ -e "$(basename "${FILE_MAP[web]}")" ]; then
     nohup ./"$sbb" run -c config.json >/dev/null 2>&1 &
     sleep 5
 if pgrep -x "$sbb" > /dev/null; then
-    green "$sbb 主进程已启动"
+    green "$sbb The main process has been started"
 else
-    red "$sbb 主进程未启动, 重启中..."
+    red "$sbb The main process has not started, restarting..."
     pkill -x "$sbb"
     nohup ./"$sbb" run -c config.json >/dev/null 2>&1 &
     sleep 2
-    purple "$sbb 主进程已重启"
+    purple "$sbb The main process has been restarted"
 fi
 else
     sbb=$(cat sb.txt)   
     nohup ./"$sbb" run -c config.json >/dev/null 2>&1 &
     sleep 5
 if pgrep -x "$sbb" > /dev/null; then
-    green "$sbb 主进程已启动"
+    green "$sbb The main process has been started"
+
 else
-    red "$sbb 主进程未启动, 重启中..."
+    red "$sbb The main process has not started, restarting..."
     pkill -x "$sbb"
     nohup ./"$sbb" run -c config.json >/dev/null 2>&1 &
     sleep 2
-    purple "$sbb 主进程已重启"
+    purple "$sbb The main process has been restarted"
 fi
 fi
 else
-green "主进程已启动"
+green "The main process has been started
 fi
 cfgo() {
 rm -rf boot.log
@@ -607,13 +609,13 @@ if [ -e "$(basename "${FILE_MAP[bot]}")" ]; then
     nohup ./"$agg" $args >/dev/null 2>&1 &
     sleep 10
 if pgrep -x "$agg" > /dev/null; then
-    green "$agg Arog进程已启动"
+    green "$agg Arog process has started"
 else
-    red "$agg Argo进程未启动, 重启中..."
+    red "$agg Argo process not started, restarting..."
     pkill -x "$agg"
     nohup ./"$agg" "${args}" >/dev/null 2>&1 &
     sleep 5
-    purple "$agg Argo进程已重启"
+    purple "$agg Argo process has been restarted"
 fi
 else
    agg=$(cat ag.txt)
@@ -627,13 +629,13 @@ else
     nohup ./"$agg" $args >/dev/null 2>&1 &
     sleep 10
 if pgrep -x "$agg" > /dev/null; then
-    green "$agg Arog进程已启动"
+    green "$agg Arog process has started"
 else
-    red "$agg Argo进程未启动, 重启中..."
+    red "$agg Argo process not started, restarting..."
     pkill -x "$agg"
     nohup ./"$agg" "${args}" >/dev/null 2>&1 &
     sleep 5
-    purple "$agg Argo进程已重启"
+    purple "$agg Argo process has been restarted"
 fi
 fi
 }
@@ -652,20 +654,20 @@ elif ([ -n "$ARGO_DOMAIN" ] && ! ps aux | grep '[t]unnel --n' > /dev/null) || [ 
 ps aux | grep '[t]unnel --n' | awk '{print $2}' | xargs -r kill -9 > /dev/null 2>&1
 cfgo
 else
-green "Arog进程已启动"
+green "Arog process has started"
 fi
 sleep 2
 if ! pgrep -x "$(cat sb.txt)" > /dev/null; then
-red "主进程未启动，根据以下情况一一排查"
-yellow "1、REP选择y重置一次随机端口，三个端口参数留空不填，再改为n（重要）"
-yellow "2、RES选择y运行一次重置系统，再改为n（重要）"
-yellow "3、当前Serv00服务器炸了？等会再试"
-red "4、以上都试了，哥直接躺平，交给进程保活，过会再来看"
+red "The main process has not started. Check the following situations one by one"
+yellow "1. Select y for REP to reset a random port, leave the three port parameters blank, and then change to n (important)"
+yellow "2. Select y for RES to reset the system once, and then change to n (important)"
+yellow "3. Is the current Serv00 server crashed? Try again later"
+red "4. After trying all of the above, I will just lie down and let the process keep alive. I will check again later"
 fi
 
 
 argodomain=$(get_argodomain)
-echo -e "\e[1;32mArgo域名：\e[1;35m${argodomain}\e[0m\n"
+echo -e "\e[1;32mArgo Domains：\e[1;35m${argodomain}\e[0m\n"
 vl_link="vless://$UUID@$IP:$vless_port?encryption=none&flow=xtls-rprx-vision&security=reality&sni=$reym&fp=chrome&pbk=$public_key&type=tcp&headerType=none#$snb-reality-$USERNAME"
 echo "$vl_link" > jh.txt
 vmws_link="vmess://$(echo "{ \"v\": \"2\", \"ps\": \"$snb-vmess-ws-$USERNAME\", \"add\": \"$IP\", \"port\": \"$vmess_port\", \"id\": \"$UUID\", \"aid\": \"0\", \"scy\": \"auto\", \"net\": \"ws\", \"type\": \"none\", \"host\": \"\", \"path\": \"/$UUID-vm?ed=2048\", \"tls\": \"\", \"sni\": \"\", \"alpn\": \"\", \"fp\": \"\"}" | base64 -w0)"
@@ -1164,83 +1166,80 @@ showuuid=$(jq -r '.inbounds[0].users[0].password' config.json)
 cat > list.txt <<EOF
 =================================================================================================
 
-当前客户端正在使用的IP：$IP
-如默认节点IP被墙，可在客户端地址更换以下其他IP
+The IP currently used by the client: $IP
+If the default node IP is blocked, you can replace the following other IPs in the client address
 $(dig @8.8.8.8 +time=5 +short "web$nb.serv00.com" | sort -u)
 $(dig @8.8.8.8 +time=5 +short "$HOSTNAME" | sort -u)
 $(dig @8.8.8.8 +time=5 +short "cache$nb.serv00.com" | sort -u)
 
-当前各协议正在使用的端口如下
-vless-reality端口：$vlp
-Vmess-ws端口(设置Argo固定域名端口)：$vmp
-Hysteria2端口：$hyp
-
-UUID密码：$showuuid
-
-Argo域名：${argodomain}
+The ports currently used by each protocol are as follows
+vless-reality port: $vlp
+Vmess-ws port (set Argo fixed domain name port): $vmp
+Hysteria2 port: $hyp
+UUID password: $showuuid
+Argo domain name: ${argodomain}
 
 -------------------------------------------------------------------------------------------------
 
-一、Vless-reality分享链接如下：
+1. The Vless-reality sharing link is as follows:
 $vl_link
 
-注意：如果之前输入的reality域名为CF域名，将激活以下功能：
-可应用在 https://github.com/yonggekkk/Cloudflare_vless_trojan 项目中创建CF vless/trojan 节点
-1、Proxyip(带端口)信息如下：
-方式一全局应用：设置变量名：proxyip    设置变量值：$IP:$vless_port  
-方式二单节点应用：path路径改为：/pyip=$IP:$vless_port
-CF节点的TLS可开可关
-CF节点落地到CF网站的地区为：$IP所在地区
+Note: If the reality domain name entered before is a CF domain name, the following functions will be activated:
+Can be applied to create a CF vless/trojan node in the https://github.com/yonggekkk/Cloudflare_vless_trojan project
+1. Proxyip (with port) information is as follows:
+Method 1 Global application: Set variable name: proxyip Set variable value: $IP:$vless_port
+Method 2 Single node application: Change the path to: /pyip=$IP:$vless_port
+CF node TLS can be turned on or off
+CF node lands in the CF website in the region where $IP is located
 
-2、非标端口反代IP信息如下：
-客户端优选IP地址为：$IP，端口：$vless_port
-CF节点的TLS必须开启
-CF节点落地到非CF网站的地区为：$IP所在地区
+2. Non-standard port reverse IP information is as follows:
+The preferred IP address of the client is: $IP, port: $vless_port
+TLS of the CF node must be enabled
+The area where the CF node lands on the non-CF website is: $IP location
 
-注：如果serv00的IP被墙，proxyip依旧有效，但用于客户端地址的非标端口反代IP将不可用
-注：可能有大佬会扫Serv00的反代IP作为其共享IP库或者出售，请慎重将reality域名设置为CF域名
+Note: If serv00's IP is blocked, proxyip is still valid, 
+but the non-standard port reverse IP used for the client address will not be available. 
+
+Note: Some big guys may scan Serv00's reverse IP as their shared IP library or sell it, 
+so please be careful to set the reality domain name to the CF domain name
 -------------------------------------------------------------------------------------------------
 
+2. The three forms of Vmess-ws sharing links are as follows:
 
-二、Vmess-ws分享链接三形态如下：
-
-1、Vmess-ws主节点分享链接如下：
-(该节点默认不支持CDN，如果设置为CDN回源(需域名)：客户端地址可自行修改优选IP/域名，7个80系端口随便换，被墙依旧能用！)
+1. The sharing link of the Vmess-ws main node is as follows:
+(This node does not support CDN by default. If it is set to CDN back to the source (domain name required): the client address can modify the preferred IP/domain name by itself, and the 7 80 series ports can be changed at will, and it can still be used even if it is blocked!)
 $vmws_link
 
-2、Vmess-ws-tls_Argo分享链接如下： 
-(该节点为CDN优选IP节点，客户端地址可自行修改优选IP/域名，6个443系端口随便换，被墙依旧能用！)
+2. The sharing link of Vmess-ws-tls_Argo is as follows:
+(This node is a CDN preferred IP node. The client address can modify the preferred IP/domain name by itself, and the 6 443 series ports can be changed at will, and it can still be used even if it is blocked!)
 $vmatls_link
 
-3、Vmess-ws_Argo分享链接如下：
-(该节点为CDN优选IP节点，客户端地址可自行修改优选IP/域名，7个80系端口随便换，被墙依旧能用！)
+3. The sharing link of Vmess-ws_Argo is as follows:
+(This node is a CDN preferred IP node. The client address can modify the preferred IP/domain name by itself, and the 7 80 series ports can be changed at will, and it can still be used even if it is blocked!)
 $vma_link
 -------------------------------------------------------------------------------------------------
 
-
-三、HY2分享链接如下：
+3. The HY2 sharing link is as follows: 
 $hy2_link
 -------------------------------------------------------------------------------------------------
 
-
-四、以上五个节点的聚合通用订阅分享链接如下：
+4. The aggregated universal subscription sharing link of the above five nodes is as follows:
 $V2rayN_LINK
 
-以上五个节点聚合通用分享码：
+The aggregated universal sharing code of the above five nodes is:
 $baseurl
 -------------------------------------------------------------------------------------------------
 
+5. To view the subscription profiles of Sing-box and Clash-meta, please enter the main menu and select 4
 
-五、查看Sing-box与Clash-meta的订阅配置文件，请进入主菜单选择4
-
-Clash-meta订阅分享链接：
+Clash-meta subscription sharing link:
 $Clashmeta_LINK
 
-Sing-box订阅分享链接：
+Sing-box subscription sharing link:
 $Singbox_LINK
 -------------------------------------------------------------------------------------------------
 
-多功能主页地址：http://${snb}.${USERNAME}.serv00.net
+Multi-function homepage address: http://${snb}.${USERNAME}.serv00.ne
 
 =================================================================================================
 
