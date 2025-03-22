@@ -1529,7 +1529,7 @@ if [ "$insV" = "$latestV" ]; then
 echo -e "Current Serv00/Hostuno-sb-yg script latest version: ${purple}${insV}${re} (installed)"
 else
 echo -e Current Serv00/Hostuno-sb-yg script version number：${purple}${insV}${re}"
-echo -e "The latest Serv00/Hostuno-sb-yg script version number was detected：${yellow}${latestV}${re} (You can select 5 to update)"
+echo -e "The latest Serv00/Hostuno-sb-yg script version number was detected：${yellow}${latestV}${re} (You can select 5 to update) "
 echo -e "${yellow}$(curl -sL https://raw.githubusercontent.com/yonggekkk/sing-box-yg/main/sversion)${re}"
 fi
 echo -e "========================================================="
