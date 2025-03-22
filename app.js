@@ -6,25 +6,25 @@ app.use(express.json());
 const commandToRun = "cd ~ && bash serv00keep.sh";
 function runCustomCommand() {
     exec(commandToRun, (err, stdout, stderr) => {
-        if (err) console.error("执行错误:", err);
-        else console.log("执行成功:", stdout);
+        if (err) console.error("Execution Error:", err);
+        else console.log("Execution Success:", stdout);
     });
 }
 app.get("/up", (req, res) => {
     runCustomCommand();
-    res.type("html").send("<pre>Serv00-name服务器网页保活启动：Serv00-name！UP！UP！UP！</pre>");
+    res.type("html").send("<pre>Serv00-name server web page keep alive start：Serv00-name！UP！UP！UP！</pre>");
 });
 app.get("/re", (req, res) => {
     const additionalCommands = `
         USERNAME=$(whoami | tr '[:upper:]' '[:lower:]')
         FULL_PATH="/home/\${USERNAME}/domains/\${USERNAME}.serv00.net/logs"
         cd "\$FULL_PATH"
-        pkill -f 'run -c con' || echo "无进程可终止，准备执行重启……"
+        pkill -f 'run -c con' || echo "No processes to terminate, ready to restart……"
         sbb="\$(cat sb.txt 2>/dev/null)"
         nohup ./"\$sbb" run -c config.json >/dev/null 2>&1 &
         sleep 2
         (cd ~ && bash serv00keep.sh >/dev/null 2>&1) &  
-        echo '主程序重启成功，请检测三个主节点是否可用，如不可用，可再次刷新重启网页或者重置端口'
+        echo 'The main program restarted successfully. Please check whether the three main nodes are available. If not, refresh the restart webpage or reset the port'
     `;
     exec(additionalCommands, (err, stdout, stderr) => {
         console.log('stdout:', stdout);
@@ -54,7 +54,7 @@ exec(changeportCommands, { maxBuffer: 1024 * 1024 * 10 }, (err, stdout, stderr) 
 }
 app.get("/rp", (req, res) => {
    runportCommand();  
-   res.type("html").send("<pre>重置三个节点端口完成！请立即关闭本网页并稍等20秒，将主页后缀改为  /list/你的uuid  可查看更新端口后的节点及订阅信息</pre>");
+   res.type("html").send("<pre>Resetting three node ports is complete! Please close this page immediately and wait for 20 seconds. Change the homepage suffix to /list/youruuid to view the node and subscription information after the updated port</pre>");
 });
 app.get("/list/key", (req, res) => {
     const listCommands = `
@@ -65,17 +65,17 @@ app.get("/list/key", (req, res) => {
     `;
     exec(listCommands, (err, stdout, stderr) => {
         if (err) {
-            console.error(`路径验证失败: ${stderr}`);
+            console.error(`Path validation failed: ${stderr}`);
             return res.status(404).send(stderr);
         }
         res.type('text').send(stdout);
     });
 });
 app.use((req, res) => {
-    res.status(404).send('请在浏览器地址：http://where.name.serv00.net 后面加三种路径功能：/up是保活，/re是重启，/rp是重置节点端口，/list/你的uuid 是节点及订阅信息');
+    res.status(404).send('Please enter the browser address：http://where.name.serv00.net Add three path functions at the end: /up is for keep alive, /re is for restart, /rp is for resetting the node port, and /list/youruuid is for node and subscription information');
 });
 setInterval(runCustomCommand, 3 * 60 * 1000);
 app.listen(3000, () => {
-    console.log("服务器运行在端口 3000");
+    console.log("The server runs on port 3000");
     runCustomCommand();
 });
