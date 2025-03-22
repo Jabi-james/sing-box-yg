@@ -30,9 +30,9 @@ devil binexec on >/dev/null 2>&1
 
 read_ip() {
 cat ip.txt
-reading "请输入上面三个IP中的任意一个 (建议默认回车自动选择可用IP): " IP
+reading "Please enter any one of the three IPs above (it is recommended to press Enter to automatically select an available IP by default): " IP
 if [[ -z "$IP" ]]; then
-IP=$(grep -m 1 "可用" ip.txt | awk -F ':' '{print $1}')
+IP=$(grep -m 1 "Available" ip.txt | awk -F ':' '{print $1}')
 if [ -z "$IP" ]; then
 IP=$(okip)
 if [ -z "$IP" ]; then
@@ -42,24 +42,24 @@ fi
 fi
 echo "$IP" > $WORKDIR/ipone.txt
 IP=$(<$WORKDIR/ipone.txt)
-green "你选择的IP为: $IP"
+green "The IP you selected is: $IP"
 }
 
 read_uuid() {
-reading "请输入统一的uuid密码 (建议回车默认随机): " UUID
+reading "Please enter a unified uuid password (it is recommended to press Enter to default to random): " UUID
 if [[ -z "$UUID" ]]; then
 UUID=$(uuidgen -r)
 fi
 echo "$UUID" > $WORKDIR/UUID.txt
 UUID=$(<$WORKDIR/UUID.txt)
-green "你的uuid为: $UUID"
+green "Your uuid is: $UUID"
 }
 
 read_reym() {
-yellow "方式一：(推荐)使用Serv00/Hostuno自带域名，不支持proxyip功能：输入回车"
-yellow "方式二：使用CF域名(www.speedtest.net)，支持proxyip+非标端口反代ip功能：输入s"
-yellow "方式三：支持其他域名，注意要符合reality域名规则：输入域名"
-reading "请输入reality域名 【请选择 回车 或者 s 或者 输入域名】: " reym
+yellow "Method 1: (Recommended) Use the domain name provided by Serv00/Hostuno, which does not support the proxyip function: Enter and press Enter"
+yellow "Method 2：Use CF domain name (www.speedtest.net), support proxyip+non-standard port reverse IP function: enter s"
+yellow "Method 3: Support other domain names, please note that they must comply with the reality domain name rules: Enter the domain name"
+reading "Please enter the reality domain name [Please select Enter or s or enter the domain name】: " reym
 if [[ -z "$reym" ]]; then
 reym=$USERNAME.${address}
 elif [[ "$reym" == "s" || "$reym" == "S" ]]; then
@@ -67,18 +67,18 @@ reym=www.speedtest.net
 fi
 echo "$reym" > $WORKDIR/reym.txt
 reym=$(<$WORKDIR/reym.txt)
-green "你的reality域名为: $reym"
+green "Your reality domain name is: $reym"
 }
 
 resallport(){
 portlist=$(devil port list | grep -E '^[0-9]+[[:space:]]+[a-zA-Z]+' | sed 's/^[[:space:]]*//')
 if [[ -z "$portlist" ]]; then
-yellow "无端口"
+yellow "No port"
 else
 while read -r line; do
 port=$(echo "$line" | awk '{print $1}')
 port_type=$(echo "$line" | awk '{print $2}')
-yellow "删除端口 $port ($port_type)"
+yellow "Deleting a Port $port ($port_type)"
 devil port del "$port_type" "$port"
 done <<< "$portlist"
 fi
@@ -87,7 +87,7 @@ if [[ -e $WORKDIR/config.json ]]; then
 hyp=$(jq -r '.inbounds[0].listen_port' $WORKDIR/config.json)
 vlp=$(jq -r '.inbounds[3].listen_port' $WORKDIR/config.json)
 vmp=$(jq -r '.inbounds[4].listen_port' $WORKDIR/config.json)
-purple "检测到Serv00/Hostuno-sb-yg脚本已安装，执行端口替换，请稍等……"
+purple "Detected that the Serv00/Hostuno-sb-yg script has been installed, executing port replacement, please wait……"
 sed -i '' "12s/$hyp/$hy2_port/g" $WORKDIR/config.json
 sed -i '' "33s/$hyp/$hy2_port/g" $WORKDIR/config.json
 sed -i '' "54s/$hyp/$hy2_port/g" $WORKDIR/config.json
@@ -99,12 +99,12 @@ sed -i '' -e "18s|'$vmp'|'$vmess_port'|" serv00keep.sh
 sed -i '' -e "19s|'$hyp'|'$hy2_port'|" serv00keep.sh
 fi
 resservsb
-green "端口替换完成！"
-ps aux | grep '[r]un -c con' > /dev/null && green "主进程启动成功，单节点用户修改下客户端三协议端口" || yellow "Sing-box主进程启动失败"
+green "Port replacement complete!"
+ps aux | grep '[r]un -c con' > /dev/null && green "The main process started successfully. Single-node users modify the client three protocol ports" || yellow "Sing-box main process failed to start"
 if [ -f "$WORKDIR/boot.log" ]; then
-ps aux | grep '[t]unnel --u' > /dev/null && green "Argo临时隧道已启动，临时域名可能已变更" || yellow "Argo临时隧道启动失败"
+ps aux | grep '[t]unnel --u' > /dev/null && green "Argo temporary tunnel has been started, the temporary domain name may have changed" || yellow "Argo temporary tunnel failed to start"
 else
-ps aux | grep '[t]unnel --n' > /dev/null && green "Argo固定隧道已启动" || yellow "Argo固定隧道启动失败，请先在CF更改隧道端口：$vmess_port，再重启下Argo隧道"
+ps aux | grep '[t]unnel --n' > /dev/null && green "Argo fixed tunnel has been started" || yellow "Argo fixed tunnel failed to start, please change the tunnel port in CF: $vmess_port, and then restart Argo tunnel"
 fi
 fi
 cd $WORKDIR
@@ -117,19 +117,19 @@ port_list=$(devil port list)
 tcp_ports=$(echo "$port_list" | grep -c "tcp")
 udp_ports=$(echo "$port_list" | grep -c "udp")
 if [[ $tcp_ports -ne 2 || $udp_ports -ne 1 ]]; then
-    red "端口数量不符合要求，正在调整..."
+    red "The number of ports does not meet the requirement and is being adjusted..."
 
     if [[ $tcp_ports -gt 2 ]]; then
         tcp_to_delete=$((tcp_ports - 2))
         echo "$port_list" | awk '/tcp/ {print $1, $2}' | head -n $tcp_to_delete | while read port type; do
             devil port del $type $port
-            green "已删除TCP端口: $port"
+            green "Deleted TCP port: $port"
         done
     fi
     if [[ $udp_ports -gt 1 ]]; then
         udp_to_delete=$((udp_ports - 1))
         echo "$port_list" | awk '/udp/ {print $1, $2}' | head -n $udp_to_delete | while read port type; do
-            devil port del $type $port
+            devil port del Deleted UDP port$type $port
             green "已删除UDP端口: $port"
         done
     fi
@@ -140,7 +140,7 @@ if [[ $tcp_ports -ne 2 || $udp_ports -ne 1 ]]; then
             tcp_port=$(shuf -i 10000-65535 -n 1) 
             result=$(devil port add tcp $tcp_port 2>&1)
             if [[ $result == *"succesfully"* ]]; then
-                green "已添加TCP端口: $tcp_port"
+                green "TCP port added: $tcp_port"
                 if [[ $tcp_ports_added -eq 0 ]]; then
                     tcp_port1=$tcp_port
                 else
@@ -148,7 +148,7 @@ if [[ $tcp_ports -ne 2 || $udp_ports -ne 1 ]]; then
                 fi
                 tcp_ports_added=$((tcp_ports_added + 1))
             else
-                yellow "端口 $tcp_port 不可用，尝试其他端口..."
+                yellow "Port $tcp_port is not available, try another port..."
             fi
         done
     fi
@@ -157,14 +157,14 @@ if [[ $tcp_ports -ne 2 || $udp_ports -ne 1 ]]; then
             udp_port=$(shuf -i 10000-65535 -n 1) 
             result=$(devil port add udp $udp_port 2>&1)
             if [[ $result == *"succesfully"* ]]; then
-                green "已添加UDP端口: $udp_port"
+                green "UDP port added: $udp_port"
                 break
             else
-                yellow "端口 $udp_port 不可用，尝试其他端口..."
+                yellow "Port $udp_port is not available, try another port..."
             fi
         done
     fi
-    #green "端口已调整完成,将断开ssh连接,请重新连接shh重新执行脚本"
+    #green "The port has been adjusted. The ssh connection will be disconnected. Please reconnect ssh and re-execute the script"
     #devil binexec on >/dev/null 2>&1
     #kill -9 $(ps -o ppid= -p $$) >/dev/null 2>&1
     sleep 3
@@ -173,20 +173,20 @@ else
     tcp_port1=$(echo "$tcp_ports" | sed -n '1p')
     tcp_port2=$(echo "$tcp_ports" | sed -n '2p')
     udp_port=$(echo "$port_list" | awk '/udp/ {print $1}')
-    purple "当前TCP端口: $tcp_port1 和 $tcp_port2"
-    purple "当前UDP端口: $udp_port"
+    purple "Current TCP port: $tcp_port1 和 $tcp_port2"
+    purple "Current UDP port: $udp_port"
 fi
 export vless_port=$tcp_port1
 export vmess_port=$tcp_port2
 export hy2_port=$udp_port
-green "你的vless-reality端口: $vless_port"
-green "你的vmess-ws端口(设置Argo固定域名端口): $vmess_port"
-green "你的hysteria2端口: $hy2_port"
+green "Your vless-reality port: $vless_port"
+green "Your vmess-ws port (set Argo fixed domain name port): $vmess_port"
+green "Your hysteria2 port: $hy2_port"
 }
 
 install_singbox() {
 if [[ -e $WORKDIR/list.txt ]]; then
-yellow "已安装sing-box，请先选择2卸载，再执行安装" && exit
+yellow "Sing-box has been installed. Please select 2 to uninstall first, then install it" && exit
 fi
 sleep 2
         cd $WORKDIR
@@ -205,7 +205,7 @@ sleep 2
         download_and_run_singbox
 	cd
         fastrun
-	green "创建快捷方式：sb"
+	green "Create a shortcut：sb"
 	echo
         if [ "$hona" = "serv00" ]; then
 	servkeep
@@ -215,16 +215,16 @@ sleep 2
         get_links
 	cd
         purple "************************************************************"
-        purple "Serv00/Hostuno-sb-yg脚本安装结束"
-	purple "退出SSH"
-	purple "请再次连接SSH，查看主菜单，请输入快捷方式：sb"
+        purple "Serv00/Hostuno-sb-yg Script installation completed"
+	purple "Exit SSH"
+	purple "Please connect to SSH again, view the main menu, and enter the shortcut：sb"
 	purple "************************************************************"
         sleep 2
         kill -9 $(ps -o ppid= -p $$) >/dev/null 2>&1
 }
 
 uninstall_singbox() {
-  reading "\n确定要卸载吗？【y/n】: " choice
+  reading "\Are you sure you want to uninstall？【y/n】: " choice
     case "$choice" in
        [Yy])
 	  bash -c 'ps aux | grep $(whoami) | grep -v "sshd\|bash\|grep" | awk "{print \$2}" | xargs -r kill -9 >/dev/null 2>&1' >/dev/null 2>&1
@@ -232,17 +232,17 @@ uninstall_singbox() {
 	  sed -i '' '/export PATH="\$HOME\/bin:\$PATH"/d' ~/.bashrc
           source ~/.bashrc
           purple "************************************************************"
-          purple "Serv00/Hostuno-sb-yg卸载完成！"
-          purple "欢迎继续使用脚本：bash <(curl -Ls https://raw.githubusercontent.com/yonggekkk/sing-box-yg/main/serv00.sh)"
+          purple "Serv00/Hostuno-sb-ygUninstall complete!"
+          purple "Welcome to continue using the script：bash <(curl -Ls https://raw.githubusercontent.com/yonggekkk/sing-box-yg/main/serv00.sh)"
           purple "************************************************************"
           ;;
         [Nn]) exit 0 ;;
-    	*) red "无效的选择，请输入y或n" && menu ;;
+    	*) red "Invalid selection, please enter y or n" && menu ;;
     esac
 }
 
 kill_all_tasks() {
-reading "\n注意！！！清理所有进程并清空所有安装内容，将退出ssh连接，确定继续清理吗？【y/n】: " choice
+reading "\Attention!!! Cleaning up all processes and clearing all installed contents will exit the ssh connection. Are you sure you want to continue cleaning?【y/n】: " choice
   case "$choice" in
     [Yy]) 
     bash -c 'ps aux | grep $(whoami) | grep -v "sshd\|bash\|grep" | awk "{print \$2}" | xargs -r kill -9 >/dev/null 2>&1' >/dev/null 2>&1
@@ -250,8 +250,8 @@ reading "\n注意！！！清理所有进程并清空所有安装内容，将退
     sed -i '' '/export PATH="\$HOME\/bin:\$PATH"/d' ~/.bashrc
     source ~/.bashrc
     purple "************************************************************"
-    purple "Serv00/Hostuno-sb-yg清理重置完成！"
-    purple "欢迎继续使用脚本：bash <(curl -Ls https://raw.githubusercontent.com/yonggekkk/sing-box-yg/main/serv00.sh)"
+    purple "Serv00/Hostuno-sb-yg cleanup and reset completed!"
+    purple "Welcome to continue using the script：bash <(curl -Ls https://raw.githubusercontent.com/yonggekkk/sing-box-yg/main/serv00.sh)"
     purple "************************************************************"
     find ~ -type f -exec chmod 644 {} \; 2>/dev/null
     find ~ -type d -exec chmod 755 {} \; 2>/dev/null
@@ -266,23 +266,23 @@ reading "\n注意！！！清理所有进程并清空所有安装内容，将退
 
 argo_configure() {
   while true; do
-    yellow "方式一：(推荐)无需域名的Argo临时隧道：输入回车"
-    yellow "方式二：需要域名的Argo固定隧道(需要CF设置提取Token)：输入g"
-    reading "【请选择 g 或者 回车】: " argo_choice
+    yellow "Method 1：(Recommended) Argo temporary tunnel without domain name: Enter"
+    yellow "Method 2: Argo fixed tunnel with domain name required (CF needs to be set up to extract token): Enter g"
+    reading "【Please select g or press Enter】: " argo_choice
     if [[ "$argo_choice" != "g" && "$argo_choice" != "G" && -n "$argo_choice" ]]; then
-        red "无效的选择，请输入 g 或回车"
+        red "Invalid selection, please type g or press Enter"
         continue
     fi
     if [[ "$argo_choice" == "g" || "$argo_choice" == "G" ]]; then
-        reading "请输入argo固定隧道域名: " ARGO_DOMAIN
+        reading "Please enter the argo fixed tunnel domain name: " ARGO_DOMAIN
 	echo "$ARGO_DOMAIN" | tee ARGO_DOMAIN.log ARGO_DOMAIN_show.log > /dev/null
-        green "你的argo固定隧道域名为: $ARGO_DOMAIN"
-        reading "请输入argo固定隧道密钥（当你粘贴Token时，必须以ey开头）: " ARGO_AUTH
+        green "Your argo fixed tunnel domain name is: $ARGO_DOMAIN"
+        reading "Please enter the Argo fixed tunnel key (when you paste the token, it must start with ey）: " ARGO_AUTH
 	echo "$ARGO_AUTH" | tee ARGO_AUTH.log ARGO_AUTH_show.log > /dev/null
-        green "你的argo固定隧道密钥为: $ARGO_AUTH"
+        green "Your argo fixed tunnel key is: $ARGO_AUTH"
 	rm -rf boot.log
     else
-        green "使用Argo临时隧道"
+        green "Using Argo Temporary Tunnels"
 	rm -rf ARGO_AUTH.log ARGO_DOMAIN.log
     fi
     break
@@ -538,30 +538,30 @@ if [ -e "$(basename "${FILE_MAP[web]}")" ]; then
     nohup ./"$sbb" run -c config.json >/dev/null 2>&1 &
     sleep 5
 if pgrep -x "$sbb" > /dev/null; then
-    green "$sbb 主进程已启动"
+    green "$sbb The main process has started"
 else
-    red "$sbb 主进程未启动, 重启中..."
+    red "$sbb The main process has not started, restarting..."
     pkill -x "$sbb"
     nohup ./"$sbb" run -c config.json >/dev/null 2>&1 &
     sleep 2
-    purple "$sbb 主进程已重启"
+    purple "$sbb The main process has been restarted"
 fi
 else
     sbb=$(cat sb.txt)   
     nohup ./"$sbb" run -c config.json >/dev/null 2>&1 &
     sleep 5
 if pgrep -x "$sbb" > /dev/null; then
-    green "$sbb 主进程已启动"
+    green "$sbb The main process has started"
 else
-    red "$sbb 主进程未启动, 重启中..."
+    red "$sbb The main process has not started, restarting..."
     pkill -x "$sbb"
     nohup ./"$sbb" run -c config.json >/dev/null 2>&1 &
     sleep 2
-    purple "$sbb 主进程已重启"
+    purple "$sbb The main process has been restarted"
 fi
 fi
 else
-green "主进程已启动"
+green "The main process has been started"
 fi
 cfgo() {
 rm -rf boot.log
@@ -578,13 +578,13 @@ if [ -e "$(basename "${FILE_MAP[bot]}")" ]; then
     nohup ./"$agg" $args >/dev/null 2>&1 &
     sleep 10
 if pgrep -x "$agg" > /dev/null; then
-    green "$agg Arog进程已启动"
+    green "$agg Arog process has started"
 else
-    red "$agg Argo进程未启动, 重启中..."
+    red "$agg Argo process not started, restarting..."
     pkill -x "$agg"
     nohup ./"$agg" "${args}" >/dev/null 2>&1 &
     sleep 5
-    purple "$agg Argo进程已重启"
+    purple "$agg Argo process has been restarted"
 fi
 else
    agg=$(cat ag.txt)
@@ -598,13 +598,13 @@ else
     nohup ./"$agg" $args >/dev/null 2>&1 &
     sleep 10
 if pgrep -x "$agg" > /dev/null; then
-    green "$agg Arog进程已启动"
+    green "$agg Arog process started"
 else
-    red "$agg Argo进程未启动, 重启中..."
+    red "$agg Argo process not started, restartin..."
     pkill -x "$agg"
     nohup ./"$agg" "${args}" >/dev/null 2>&1 &
     sleep 5
-    purple "$agg Argo进程已重启"
+    purple "$agg The Argo process has been restarted"
 fi
 fi
 }
@@ -623,15 +623,15 @@ elif ([ -n "$ARGO_DOMAIN" ] && ! ps aux | grep '[t]unnel --n' > /dev/null) || [ 
 ps aux | grep '[t]unnel --n' | awk '{print $2}' | xargs -r kill -9 > /dev/null 2>&1
 cfgo
 else
-green "Arog进程已启动"
+green "Arog process has started"
 fi
 sleep 2
 if ! pgrep -x "$(cat sb.txt)" > /dev/null; then
-red "主进程未启动，根据以下情况一一排查"
-yellow "1、选择8重置端口，自动生成随机可用端口（重要）"
-yellow "2、选择9重置"
-yellow "3、当前Serv00/Hostuno服务器炸了？等会再试"
-red "4、以上都试了，哥直接躺平，交给进程保活，过会再来看"
+red "The main process has not started. Check the following situations one by one
+yellow "1、Select 8 to reset the port and automatically generate a random available port (important)"
+yellow "2、Select 9 to reset"
+yellow "3、Is the current Serv00/Hostuno server down? Try again later"
+red "4、I have tried all of the above. I will just lie down and let the process keep alive. I will come back later"
 sleep 6
 fi
 }
@@ -652,7 +652,7 @@ get_argodomain() {
       sleep 2
     done  
     if [ -z ${argodomain} ]; then
-    argodomain="Argo临时域名暂时获取失败，Argo节点暂不可用(保活过程中会自动恢复)，其他节点依旧可用"
+    argodomain="Failed to obtain the Argo temporary domain name. The Argo node is temporarily unavailable (it will be automatically restored during the keepalive process). Other nodes are still available"
     fi
     echo "$argodomain"
   fi
@@ -660,7 +660,7 @@ get_argodomain() {
 
 get_links(){
 argodomain=$(get_argodomain)
-echo -e "\e[1;32mArgo域名：\e[1;35m${argodomain}\e[0m\n"
+echo -e "\e[1;32mArgo Domains：\e[1;35m${argodomain}\e[0m\n"
 vl_link="vless://$UUID@$IP:$vless_port?encryption=none&flow=xtls-rprx-vision&security=reality&sni=$reym&fp=chrome&pbk=$public_key&type=tcp&headerType=none#$snb-reality-$USERNAME"
 echo "$vl_link" > jh.txt
 vmws_link="vmess://$(echo "{ \"v\": \"2\", \"ps\": \"$snb-vmess-ws-$USERNAME\", \"add\": \"$IP\", \"port\": \"$vmess_port\", \"id\": \"$UUID\", \"aid\": \"0\", \"scy\": \"auto\", \"net\": \"ws\", \"type\": \"none\", \"host\": \"\", \"path\": \"/$UUID-vm?ed=2048\", \"tls\": \"\", \"sni\": \"\", \"alpn\": \"\", \"fp\": \"\"}" | base64 -w0)"
@@ -1157,78 +1157,78 @@ showuuid=$(jq -r '.inbounds[0].users[0].password' config.json)
 cat > list.txt <<EOF
 =================================================================================================
 
-当前客户端正在使用的IP：$IP
-如默认节点IP被墙，可在客户端地址更换以下其他IP
+The IP currently being used by the client：$IP
+If the default node IP is blocked, you can change the following other IP addresses in the client address
 $(dig @8.8.8.8 +time=5 +short "web$nb.${hona}.com" | sort -u)
 $(dig @8.8.8.8 +time=5 +short "$HOSTNAME" | sort -u)
 $(dig @8.8.8.8 +time=5 +short "cache$nb.${hona}.com" | sort -u)
 
-当前各协议正在使用的端口如下
-vless-reality端口：$vlp
-Vmess-ws端口(设置Argo固定域名端口)：$vmp
-Hysteria2端口：$hyp
+The ports currently being used by each protocol are as follows
+vless-reality port：$vlp
+Vmess-ws Port (Set Argo fixed domain name port)：$vmp
+Hysteria2 Port：$hyp
 
-UUID密码：$showuuid
+UUID Password：$showuuid
 
-Argo域名：${argodomain}
+Argo Domains：${argodomain}
 -------------------------------------------------------------------------------------------------
 
-一、Vless-reality分享链接如下：
+1. Vless-reality sharing link is as follows：
 $vl_link
 
-注意：如果之前输入的reality域名为CF域名，将激活以下功能：
-可应用在 https://github.com/yonggekkk/Cloudflare_vless_trojan 项目中创建CF vless/trojan 节点
-1、Proxyip(带端口)信息如下：
-方式一全局应用：设置变量名：proxyip    设置变量值：$IP:$vless_port  
-方式二单节点应用：path路径改为：/pyip=$IP:$vless_port
-CF节点的TLS可开可关
-CF节点落地到CF网站的地区为：$IP所在地区
+Note: If the reality domain name entered previously is a CF domain name, the following functions will be activated:
+You can use it to create a CF vless/trojan node in the https://github.com/yonggekkk/Cloudflare_vless_trojan project
+1. The Proxyip (with port) information is as follows:
+Method 1 Global application: Set variable name: proxyip Set variable value: $IP:$vless_port  
+Method 2: Single-node application: Change the path to: /pyip=$IP:$vless_port 
+TLS of CF node can be turned on or off
+The area where the CF node lands on the CF website is: $IP location
 
-2、非标端口反代IP信息如下：
-客户端优选IP地址为：$IP，端口：$vless_port
-CF节点的TLS必须开启
-CF节点落地到非CF网站的地区为：$IP所在地区
+2. Non-standard port reverse IP information is as follows: 
+The preferred IP address of the client is: $IP, port: $vless_port 
+TLS of the CF node must be enabled 
+The area where the CF node lands on the non-CF website is: $IP location
 
-注：如果Serv00/Hostuno的IP被墙，proxyip依旧有效，但用于客户端地址的非标端口反代IP将不可用
-注：可能有大佬会扫Serv00/Hostuno的反代IP作为其共享IP库或者出售，请慎重将reality域名设置为CF域名
+Note: If the IP of Serv00/Hostuno is blocked, the proxyip is still valid, but the non-standard port reverse IP used for the client address will not be available. 
+Note: Some big guys may scan the reverse IP of Serv00/Hostuno as their shared IP library or sell it, so please be careful to set the reality domain name to the CF domain name
 -------------------------------------------------------------------------------------------------
 
 
-二、Vmess-ws分享链接三形态如下：
+2. The three forms of Vmess-ws sharing link are as follows:
 
-1、Vmess-ws主节点分享链接如下：
-(该节点默认不支持CDN，如果设置为CDN回源(需域名)：客户端地址可自行修改优选IP/域名，7个80系端口随便换，被墙依旧能用！)
+1. The Vmess-ws master node sharing link is as follows:
+(This node does not support CDN by default. If it is set to CDN back to the source (domain name required): the client address can be modified by the preferred IP/domain name, and the 7 80 series ports can be changed at will. It can still be used even if blocked!)
 $vmws_link
 
-2、Vmess-ws-tls_Argo分享链接如下： 
-(该节点为CDN优选IP节点，客户端地址可自行修改优选IP/域名，6个443系端口随便换，被墙依旧能用！)
+2. The Vmess-ws-tls_Argo sharing link is as follows: 
+(This node is a CDN preferred IP node. The client address can modify the preferred IP/domain name by itself. The 6 443 series ports can be changed at will. It can still be used even if blocked!)
 $vmatls_link
 
-3、Vmess-ws_Argo分享链接如下：
-(该节点为CDN优选IP节点，客户端地址可自行修改优选IP/域名，7个80系端口随便换，被墙依旧能用！)
+3. The Vmess-ws_Argo sharing link is as follows: 
+(This node is a CDN preferred IP node. The client address can modify the preferred IP/domain name by itself. The 7 80 series ports can be changed at will. It can still be used even if blocked!)
 $vma_link
 -------------------------------------------------------------------------------------------------
 
 
-三、HY2分享链接如下：
+3. HY2 sharing link is as follows:
 $hy2_link
 -------------------------------------------------------------------------------------------------
 
 
-四、以上五个节点的聚合通用订阅分享链接如下：
+4. The aggregated general subscription sharing links of the above five nodes are as follows:
 $V2rayN_LINK
 
-以上五个节点聚合通用分享码：
+The above five nodes aggregate the universal sharing code:
 $baseurl
 -------------------------------------------------------------------------------------------------
 
 
-五、查看Sing-box与Clash-meta的订阅配置文件，请进入主菜单选择4
+5. To view the subscription profiles of Sing-box and Clash-meta, please enter the main menu and select 4
 
-Clash-meta订阅分享链接：
+Clash-meta subscription sharing link:
 $Clashmeta_LINK
 
-Sing-box订阅分享链接：
+Sing-box subscription sharing link:
 $Singbox_LINK
 -------------------------------------------------------------------------------------------------
 
@@ -1242,31 +1242,31 @@ rm -rf sb.log core tunnel.yml tunnel.json fake_useragent_0.2.0.json
 
 showlist(){
 if [[ -e $WORKDIR/list.txt ]]; then
-green "查看节点、订阅、反代IP、ProxyIP等信息！更新中，请稍等……"
+green "Check the information of nodes, subscriptions, reverse IP, ProxyIP, etc.! Updating, please wait……"
 sleep 3
 cat $WORKDIR/list.txt
 else
-red "未安装脚本，请选择1进行安装" && exit
+red "The script is not installed, please select 1 to install it" && exit
 fi
 }
 
 showsbclash(){
 if [[ -e $WORKDIR/sing_box.json ]]; then
-green "查看clash与singbox配置明文！更新中，请稍等……"
+green "View the plain text of clash and singbox configuration! Updating, please wait……"
 sleep 3
-green "Sing_box配置文件如下，可上传到订阅类客户端上使用："
-yellow "其中Argo节点为CDN优选IP节点，server地址可自行修改优选IP/域名，被墙依旧能用！"
+green "The Sing_box configuration file is as follows and can be uploaded to the subscription client for use："
+yellow "Argo nodes are CDN preferred IP nodes. The server address can be modified to the preferred IP/domain name. It can still be used even if blocked！"
 sleep 2
 cat $WORKDIR/sing_box.json 
 echo
 echo
-green "Clash_meta配置文件如下，可上传到订阅类客户端上使用："
-yellow "其中Argo节点为CDN优选IP节点，server地址可自行修改优选IP/域名，被墙依旧能用！"
+green "The Clash_meta configuration file is as follows and can be uploaded to the subscription client for use："
+yellow "Among them, the Argo node is the CDN preferred IP node. The server address can be modified by the preferred IP/domain name. It can still be used even if it is blocked!"
 sleep 2
 cat $WORKDIR/clash_meta.yaml
 echo
 else
-red "未安装脚本，请选择1进行安装" && exit
+red "The script is not installed, please select 1 to install it" && exit
 fi
 }
 
@@ -1296,7 +1296,7 @@ declare -f check_port >> webport.sh
 declare -f resservsb >> webport.sh
 echo 'resallport' >> webport.sh
 chmod +x webport.sh
-green "开始安装多功能主页，请稍等……"
+green "Start installing the multi-function homepage, please wait……"
 devil www del ${snb}.${USERNAME}.${hona}.net > /dev/null 2>&1
 devil www add ${USERNAME}.${hona}.net php > /dev/null 2>&1
 devil www add ${snb}.${USERNAME}.${hona}.net nodejs /usr/local/bin/node18 > /dev/null 2>&1
@@ -1311,7 +1311,7 @@ npm install basic-auth express dotenv axios --silent > /dev/null 2>&1
 rm $HOME/domains/${snb}.${USERNAME}.${hona}.net/public_nodejs/public/index.html > /dev/null 2>&1
 devil www restart ${snb}.${USERNAME}.${hona}.net
 curl -sk "http://${snb}.${USERNAME}.${hona}.net/up" > /dev/null 2>&1
-green "安装完毕，多功能主页地址：http://${snb}.${USERNAME}.${hona}.net" && sleep 2
+green "Installation completed, multi-function homepage address：http://${snb}.${USERNAME}.${hona}.net" && sleep 2
 }
 
 okip(){
@@ -1356,15 +1356,15 @@ sed -i '' "75s/where/$snb/g" "$keep_path"/app.js
 curl -sSL https://raw.githubusercontent.com/yonggekkk/sing-box-yg/main/serv00keep.sh -o serv00keep.sh && chmod +x serv00keep.sh
 fi
 curl -sL https://raw.githubusercontent.com/yonggekkk/sing-box-yg/main/index.html -o "$FILE_PATH"/index.html
-curl -sL https://raw.githubusercontent.com/yonggekkk/sing-box-yg/main/sversion | awk -F "更新内容" '{print $1}' | head -n 1 > $WORKDIR/v
+curl -sL https://raw.githubusercontent.com/yonggekkk/sing-box-yg/main/sversion | awk -F "Updates" '{print $1}' | head -n 1 > $WORKDIR/v
 else
-red "未安装脚本，请选择1进行安装" && exit
+red "The script is not installed, please select 1 to install it" && exit
 fi
 }
 
 resservsb(){
 if [[ -e $WORKDIR/config.json ]]; then
-yellow "重启中……请稍后……"
+yellow "Restarting...Please wait……"
 cd $WORKDIR
 ps aux | grep '[r]un -c con' | awk '{print $2}' | xargs -r kill -9 > /dev/null 2>&1
 sbb=$(cat sb.txt)
@@ -1373,13 +1373,13 @@ sleep 1
 curl -sk "http://${snb}.${USERNAME}.${hona}.net/up" > /dev/null 2>&1
 sleep 5
 if pgrep -x "$sbb" > /dev/null; then
-green "$sbb 主进程重启成功"
+green "$sbb The main process restarted successfully"
 else
-red "$sbb 主进程重启失败"
+red "$sbb Master process restart failed"
 fi
 cd
 else
-red "未安装脚本，请选择1进行安装" && exit
+red "The script is not installed, please select 1 to install it" && exit
 fi
 }
 
@@ -1390,17 +1390,17 @@ argoport=$(jq -r '.inbounds[4].listen_port' config.json)
 argogdshow(){
 echo
 if [ -f ARGO_AUTH_show.log ]; then
-purple "上回设置的Argo固定域名：$(cat ARGO_DOMAIN_show.log 2>/dev/null)"
-purple "上回固定隧道的Token：$(cat ARGO_AUTH_show.log 2>/dev/null)"
-purple "目前检查CF官网的Argo固定隧道端口：$argoport"
+purple "The Argo fixed domain name set last time：$(cat ARGO_DOMAIN_show.log 2>/dev/null)"
+purple "The token of the fixed tunnel：$(cat ARGO_AUTH_show.log 2>/dev/null)"
+purple "Currently checking the Argo fixed tunnel port on the CF official website：$argoport"
 fi
 echo
 }
 if [ -f boot.log ]; then
-green "当前正在使用Argo临时隧道"
+green "Currently using Argo temporary tunnel"
 argogdshow
 else
-green "当前正在使用Argo固定隧道"
+green "Currently using Argo fixed tunnel"
 argogdshow
 fi
 argo_configure
@@ -1424,19 +1424,19 @@ fi
     nohup ./"$agg" $args >/dev/null 2>&1 &
     sleep 10
 if pgrep -x "$agg" > /dev/null; then
-    green "$agg Argo进程已启动"
+    green "$agg Argo process started"
 else
 for ((i=1; i<=5; i++)); do
-    red "$agg Argo进程未启动, 重启中...(尝试次数: $i)"
+    red "$agg Argo process not started, restarting...(number of attempts: $i)"
     pkill -x "$agg"
     nohup ./"$agg" "${args}" >/dev/null 2>&1 &
     sleep 5
     if pgrep -x "$agg" > /dev/null; then
-        purple "$agg Argo进程已成功重启"
+        purple "$agg AThe rgo process has been successfully restarted"
         break
     fi
     if [[ $i -eq 5 ]]; then
-        red "$agg Argo进程重启失败，Argo节点暂不可用，其他节点依旧可用"
+        red "$agg Argo process restart failed, Argo node is temporarily unavailable, other nodes are still available"
     fi
 done
 fi
@@ -1444,7 +1444,7 @@ curl -sk "http://${snb}.${USERNAME}.${hona}.net/up" > /dev/null 2>&1
 showchangelist
 cd
 else
-red "未安装脚本，请选择1进行安装" && exit
+red "The script is not installed, please select 1 to install it" && exit
 fi
 }
 
@@ -1462,31 +1462,29 @@ get_links
 menu() {
    clear
    echo "============================================================"
-   green "甬哥Github项目  ：github.com/yonggekkk"
-   green "甬哥Blogger博客 ：ygkkk.blogspot.com"
-   green "甬哥YouTube频道 ：www.youtube.com/@ygkkk"
-   green "Serv00/Hostuno三协议共存脚本：vless-reality/Vmess-ws(Argo)/Hy2"
-   green "脚本快捷方式：sb"
+   green "Serv00 three-protocol script：vless-reality/Vmess-ws(Argo)/Hy2"
+   yellow "Script version：${purple}${latestV}${re}"
+
    echo   "============================================================"
-   green  "1. 一键安装 Serv00/Hostuno-sb-yg"
+   green  "1. One-click installation of Serv00/Hostuno-sb-yg"
    echo   "------------------------------------------------------------"
-   red    "2. 卸载删除 Serv00/Hostuno-sb-yg"
+   red    "2. Uninstall and delete Serv00/Hostuno-sb-yg"
    echo   "------------------------------------------------------------"
-   green  "3. 重启主进程 (修复主节点)"
+   green  "3. Restart the master process (repair the master node)"
    echo   "------------------------------------------------------------"
-   green  "4. Argo 临时隧道与固定隧道相互切换"
+   green  "4. Argo temporary tunnel and fixed tunnel switching"
    echo   "------------------------------------------------------------"
-   green  "5. 更新脚本"
+   green  "5. Update Script"
    echo   "------------------------------------------------------------"
-   green  "6. 查看各节点分享/sing-box与clash订阅链接/反代IP/ProxyIP"
+   green  "6. View each node sharing/sing-box and clash subscription links/anti-generation IP/ProxyIP"
    echo   "------------------------------------------------------------"
-   green  "7. 查看sing-box与clash配置文件"
+   green  "7. View sing-box and clash configuration files"
    echo   "------------------------------------------------------------"
-   yellow "8. 重置并随机生成新端口 (脚本安装前后都可执行)"
+   yellow "8. Reset and randomly generate a new port (the script can be executed before and after installation)"
    echo   "------------------------------------------------------------"
-   yellow "9. 清理所有服务进程与文件 (系统初始化)"
+   yellow "9. Clean up all service processes and files (system initialization)"
    echo   "------------------------------------------------------------"
-   red    "0. 退出脚本"
+   red    "0. Exit script"
    echo   "============================================================"
 ym=("$HOSTNAME" "cache$nb.${hona}.com" "web$nb.${hona}.com")
 rm -rf $WORKDIR/ip.txt
@@ -1498,9 +1496,9 @@ sleep 1
 else
 while IFS='|' read -r ip status; do
 if [[ $status == "Accessible" ]]; then
-echo "$ip: 可用" >> $WORKDIR/ip.txt
+echo "$ip: Available" >> $WORKDIR/ip.txt
 else
-echo "$ip: 被墙 (Argo与CDN回源节点、proxyip依旧有效)" >> $WORKDIR/ip.txt
+echo "$ip: Blocked (Argo and CDN back-to-origin nodes, proxyip are still valid)" >> $WORKDIR/ip.txt
 fi	
 done <<< "$response"
 fi
@@ -1508,73 +1506,73 @@ done
 if [[ ! "$response" =~ (unknown|not|error) ]]; then
 grep ':' $WORKDIR/ip.txt | sort -u -o $WORKDIR/ip.txt
 fi
-green "${hona}服务器名称：${snb}"
+green "${hona}Server Name：${snb}"
 echo
-green "当前可选择的IP如下："
+green "The currently available IP addresses are as follows："
 cat $WORKDIR/ip.txt
 if [[ -e $WORKDIR/config.json ]]; then
-echo "如默认节点IP被墙，可在客户端地址更换以上任意一个显示可用的IP"
+echo "If the default node IP is blocked, you can change the client address to any of the above available IPs"
 fi
 echo
 portlist=$(devil port list | grep -E '^[0-9]+[[:space:]]+[a-zA-Z]+' | sed 's/^[[:space:]]*//')
 if [[ -n $portlist ]]; then
-green "已设置的端口如下："
+green "The ports that have been set are as follows："
 echo -e "$portlist"
 else
-yellow "未设置端口"
+yellow "Port not set"
 fi
 echo
 insV=$(cat $WORKDIR/v 2>/dev/null)
-latestV=$(curl -sL https://raw.githubusercontent.com/yonggekkk/sing-box-yg/main/sversion | awk -F "更新内容" '{print $1}' | head -n 1)
+latestV=$(curl -sL https://raw.githubusercontent.com/yonggekkk/sing-box-yg/main/sversion | awk -F "Updates" '{print $1}' | head -n 1)
 if [ -f $WORKDIR/v ]; then
 if [ "$insV" = "$latestV" ]; then
-echo -e "当前 Serv00/Hostuno-sb-yg 脚本最新版：${purple}${insV}${re} (已安装)"
+echo -e "Current Serv00/Hostuno-sb-yg script latest version: ${purple}${insV}${re} (installed)"
 else
-echo -e "当前 Serv00/Hostuno-sb-yg 脚本版本号：${purple}${insV}${re}"
-echo -e "检测到最新 Serv00/Hostuno-sb-yg 脚本版本号：${yellow}${latestV}${re} (可选择5进行更新)"
+echo -e Current Serv00/Hostuno-sb-yg script version number：${purple}${insV}${re}"
+echo -e "The latest Serv00/Hostuno-sb-yg script version number was detected：${yellow}${latestV}${re} (You can select 5 to update)"
 echo -e "${yellow}$(curl -sL https://raw.githubusercontent.com/yonggekkk/sing-box-yg/main/sversion)${re}"
 fi
 echo -e "========================================================="
 sbb=$(cat $WORKDIR/sb.txt 2>/dev/null)
 if pgrep -x "$sbb" > /dev/null; then
-green "Sing-box主进程运行正常"
+green "Sing-box main process is running normally"
 else
-yellow "Sing-box主进程启动失败，建议选择8重置端口，再选择9卸载重装"
+yellow "Sing-box main process failed to start, it is recommended to select 8 to reset the port, and then select 9 to uninstall and reinstall"
 fi
 if [ -f "$WORKDIR/boot.log" ]; then
 argosl=$(cat "$WORKDIR/boot.log" 2>/dev/null | grep -a trycloudflare.com | awk 'NR==2{print}' | awk -F// '{print $2}' | awk '{print $1}')
 checkhttp=$(curl -o /dev/null -s -w "%{http_code}\n" "https://$argosl")
-[ "$checkhttp" -eq 404 ] && check="域名有效" || check="域名无效"
-green "Argo临时域名：$argosl  $check"
+[ "$checkhttp" -eq 404 ] && check="Domain name is valid" || check="Invalid domain name"
+green "Argo Temporary Domain：$argosl  $check"
 else
 argogd=$(cat $WORKDIR/ARGO_DOMAIN.log 2>/dev/null)
 checkhttp=$(curl --max-time 2 -o /dev/null -s -w "%{http_code}\n" "https://$argogd")
-[ "$checkhttp" -eq 404 ] && check="域名有效" || check="域名无效"
-green "Argo固定域名：$argogd $check"
+[ "$checkhttp" -eq 404 ] && check="Domain name is valid" || check="Invalid domain name"
+green "Argo fixed domain name：$argogd $check"
 fi
 if [ "$hona" = "serv00" ]; then
-green "多功能主页如下 (支持保活、重启、重置端口、节点查询)"
+green "The multi-function home page is as follows (supports keep-alive, restart, reset port, node query)"
 purple "http://${snb}.${USERNAME}.${hona}.net"
 fi
 else
-echo -e "当前 Serv00/Hostuno-sb-yg 脚本版本号：${purple}${latestV}${re}"
-yellow "未安装 Serv00/Hostuno-sb-yg 脚本！请选择 1 安装"
+echo -e "current Serv00/Hostuno-sb-yg Script version number：${purple}${latestV}${re}"
+yellow "Serv00/Hostuno-sb-yg script is not installed! Please select 1 to install"
 fi
    echo -e "========================================================="
-   reading "请输入选择【0-9】: " choice
+   reading "Please enter your choice【0-9】: " choice
    echo
     case "${choice}" in
         1) install_singbox ;;
         2) uninstall_singbox ;; 
 	3) resservsb ;;
         4) resargo ;;
-	5) fastrun && green "脚本已更新成功" && sleep 2 && sb ;; 
+	5) fastrun && green "The script has been updated successfully" && sleep 2 && sb ;; 
         6) showlist ;;
 	7) showsbclash ;;
         8) resallport ;;
         9) kill_all_tasks ;;
 	0) exit 0 ;;
-        *) red "无效的选项，请输入 0 到 9" ;;
+        *) red "Invalid option, please enter 0 to 9" ;;
     esac
 }
 menu
