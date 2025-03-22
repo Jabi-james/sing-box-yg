@@ -628,10 +628,10 @@ fi
 sleep 2
 if ! pgrep -x "$(cat sb.txt)" > /dev/null; then
 red "The main process has not started. Check the following situations one by one
-yellow "1、Select 8 to reset the port and automatically generate a random available port (important)"
-yellow "2、Select 9 to reset"
-yellow "3、Is the current Serv00/Hostuno server down? Try again later"
-red "4、I have tried all of the above. I will just lie down and let the process keep alive. I will come back later"
+yellow "1. Select 8 to reset the port and automatically generate a random available port (important)"
+yellow "2. Select 9 to reset"
+yellow "3. Is the current Serv00/Hostuno server down? Try again later"
+red "4. I have tried all of the above. I will just lie down and let the process keep alive. I will come back later"
 sleep 6
 fi
 }
