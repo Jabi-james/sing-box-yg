@@ -1,12 +1,10 @@
-v25.2.9更新内容：
+v25.2.9 update content:
 
-本次更新必须卸载重装
+This update requires uninstalling and reinstalling
 
-本次更新必须卸载重装
+Update content:
+For the first installation, the 1.10 and 1.10 kernels are added, 
+which are divided into 1.10 kernel (supports geosite diversion) and 1.10 kernels (do not support geosite diversion). 
+Menu 8-3 can switch kernel versions at will.
 
-本次更新必须卸载重装
-
-更新内容：
-首次安装增加1.10与1.10后内核的选择，分1.10内核（支持geosite分流）与1.10后内核（不支持geosite分流），菜单8-3可随意切换内核版本
-
-详见：https://ygkkk.blogspot.com/2023/10/sing-box-yg.html
+For details, please see: https://ygkkk.blogspot.com/2023/10/sing-box-yg.html
