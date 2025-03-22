@@ -1,7 +1,7 @@
 addEventListener('scheduled', event => event.waitUntil(handleScheduled()));
-// 配合甬哥的serv00的SSH脚本或者Github/VPS/软路由脚本，生成保活网页与重启网页
-// 每个保活/up网页或每个重启/re网页之间用空格或者，或者,间隔开，网页前带http://
-const urlString = 'http://保活或重启网页1 http://保活或重启网页2 http://保活或重启网页3 ………';
+// Use Yongge's serv00 SSH script or Github/VPS/soft router script to generate keep-alive and restart web page
+// Each keep-alive/up page or each restart/re page is separated by a space or, or, and the page is preceded by http://
+const urlString = 'http://Keep alive or restart web page 1 http://Keep alive or restart web page 2 http://Keep alive or restart web page 3 ………';
 const urls = urlString.split(/[\s,，]+/);
 const TIMEOUT = 5000;
 async function fetchWithTimeout(url) {
@@ -9,15 +9,15 @@ async function fetchWithTimeout(url) {
   const timeout = setTimeout(() => controller.abort(), TIMEOUT);
   try {
     await fetch(url, { signal: controller.signal });
-    console.log(`✅ 成功: ${url}`);
+    console.log(`✅ success: ${url}`);
   } catch (error) {
-    console.warn(`❌ 访问失败: ${url}, 错误: ${error.message}`);
+    console.warn(`❌ Access failed: ${url}, mistake: ${error.message}`);
   } finally {
     clearTimeout(timeout);
   }
 }
 async function handleScheduled() {
-  console.log('⏳ 任务开始');
+  console.log('⏳ Mission Start');
   await Promise.all(urls.map(fetchWithTimeout));
-  console.log('📊 任务结束');
+  console.log('📊 Mission Complete');
 }
